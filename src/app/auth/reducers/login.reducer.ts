@@ -31,7 +31,8 @@ export function reducer(state = initialState, action: AuthActionsUnion): State {
     case AuthActionTypes.LoginFailure: {
       return {
         ...state,
-        error: action.payload,
+        // error: action.payload,
+        error: 'メールアドレスかパスワードが間違っています',
         pending: false,
       };
     }

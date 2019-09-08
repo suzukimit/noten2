@@ -30,7 +30,6 @@ export class PhrasesComponent extends AbstractComponent {
 
   ngOnInit() {
     super.ngOnInit();
-
     this.store.dispatch(new LoadPhrases());
     this.phrases$ = this.store.pipe(select(getPhrases));
 
