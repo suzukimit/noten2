@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+  <a class="navbar-brand h1" href="#">
+    <fa name="music" class="text-info"></fa>Noten
+  </a>
+
+  <ul class="navbar-nav mr-auto mt-2 mt-lg-0 buttons">
+    <button class="btn btn-info" (click)="createPhrase()">
+      <li class="nav-item">
+        <fa name="plus"></fa>
+      </li>
+    </button>
+    <button class="btn btn-info" (click)="openNotebook()">
+      <li class="nav-item">
+        <fa name="book"></fa>
+      </li>
+    </button>
+    <button class="btn btn-info">
+      <li class="nav-item">
+        <fa name="tags"></fa>
+      </li>
+    </button>
+  </ul>
+
+  <form class="form-inline my-2 my-lg-0 search">
+    <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-info" type="submit">
+      <fa name="search"></fa>
+    </button>
+  </form>
+
+  <div ngbDropdown class="d-inline-block account">
+    <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Account</button>
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+      <button class="dropdown-item">Profile</button>
+      <button class="dropdown-item">Settings</button>
+      <button class="dropdown-item" (click)="logout()">Log out</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid main-content">
+  <div class="row">
+    <div class="col-md-2 list"><phrases></phrases></div>
+    <div class="col-md-10 detail"><router-outlet></router-outlet></div>
+  </div>
+</div>
+
+<hr>
+<pre>{{closeResult}}</pre>

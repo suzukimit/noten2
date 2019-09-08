@@ -1,0 +1,24 @@
+<div class="form-group" [formGroup]=form>
+  <label htmlFor={{name}}>
+    {{labelName}}
+  </label>
+  <input
+    *ngIf=isInputType()
+    type={{type}}
+    class="form-control"
+    id={{name}}
+    placeholder={{name}}
+    [formControlName]="controlName ? controlName : name">
+  <select
+    *ngIf=isSelectType()
+    class="form-control"
+    [formControlName]="controlName ? controlName : name">
+    <option *ngFor="let option of options">{{option}}</option>
+  </select>
+  <textarea
+    *ngIf=isTextareaType()
+    class="form-control"
+    [rows]=rows
+    [formControlName]="controlName ? controlName : name">
+  </textarea>
+</div>

@@ -1,0 +1,69 @@
+.odd {
+  background-color: #f6f8fa;
+}
+
+.even {
+  background-color: #545f66;
+  h3 {
+    color: #f6f8fa;
+  }
+  p {
+    color: #E3E3E3;
+  }
+  span {
+    color: #193056;
+  }
+}
+
+.top-logo {
+  padding-top: 140px;
+  padding-bottom: 140px;
+  text-align: center;
+  .login {
+    padding-top: 2em;
+  }
+}
+
+.sections {
+  text-align: center;
+
+  .section {
+    padding-top: 140px;
+    padding-bottom: 140px;
+  }
+
+  .section-1 {
+    .notes img {
+      width: 320px;
+      border-radius: 6px;
+    }
+  }
+
+  .section-2 {
+    .tag-circle {
+      background-color: #2da4a8;
+      border-radius: 50%;
+      height: 250px;
+      width: 250px;
+      .tag {
+        padding-top: 70px;
+      }
+    }
+  }
+
+  .section-3 {
+    .tablet-circle {
+      background-color: #53103A;
+      border-radius: 50%;
+      height: 250px;
+      width: 250px;
+      .tablet {
+        padding-top: 70px;
+      }
+    }
+  }
+}
+
+.copy-right {
+  padding-top: 50px;
+}
