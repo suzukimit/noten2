@@ -3,7 +3,7 @@ import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { map, concatMap, switchMap, catchError } from 'rxjs/operators';
+import {map, concatMap, switchMap, catchError, tap} from 'rxjs/operators';
 import {PhraseService} from '../services/phrase.service';
 
 import {
@@ -21,6 +21,8 @@ import {
   DeletePhraseSuccess,
   DeletePhraseFail, LoadPhrase, LoadPhraseSuccess, LoadPhraseFail,
 } from '../actions/phrase.action';
+import {Router} from '@angular/router';
+import {Phrase} from '../models/phrase';
 
 /**
  * Effects
@@ -30,7 +32,8 @@ export class PhraseEffects {
 
   constructor(
     private actions$: Actions,
-    private phraseService: PhraseService
+    private phraseService: PhraseService,
+    private router: Router,
   ) {}
 
   /**
@@ -113,4 +116,25 @@ export class PhraseEffects {
     )
   );
 
+  /**
+   * Create Success
+   */
+  @Effect({ dispatch: false })
+  createPhraseSuccess$: Observable<Action> = this.actions$.pipe(
+    ofType<CreatePhraseSuccess>(PhraseActionTypes.CreatePhraseSuccess),
+    tap((res: CreatePhraseSuccess) => {
+      this.router.navigate(['/home', res.payload.phrase.id])
+    }),
+  );
+
+  /**
+   * Delete Success
+   */
+  @Effect({ dispatch: false })
+  deletePhraseSuccess$: Observable<Action> = this.actions$.pipe(
+    ofType<DeletePhraseSuccess>(PhraseActionTypes.DeletePhraseSuccess),
+    tap(() => {
+      this.router.navigate(['/home'])
+    }),
+  );
 }
