@@ -1,9 +1,16 @@
-div.paper {
-  #abc {
-    display: none;
+div.main-content {
+  height: 100%;
+  div.paper {
+    div.wrapper {
+      margin: 1.5em;
+    }
+    #abc {
+      display: none;
+    }
+    padding: 0;
   }
-}
 
-div.edit {
-  background-color: aqua;
+  div.edit {
+    padding-left: 0;
+  }
 }

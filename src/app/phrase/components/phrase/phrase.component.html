@@ -1,27 +1,15 @@
-<div class="container-fluid main-content">
+<div class="container-fluid main-content bg-light">
   <div class="row">
     <div class="col-md-8 paper">
-      <div id="warnings"></div>
-      <div id="paper0"></div>
-      <textarea id="abc" cols="80" rows="15" #abc></textarea>
+      <div class="wrapper bg-white">
+        <div id="warnings"></div>
+        <div id="paper0"></div>
+        <textarea id="abc" cols="80" rows="15" #abc></textarea>
+      </div>
     </div>
     <div class="col-md-4 edit">
 
       <form [formGroup]="phraseForm" (ngSubmit)="save()">
-
-        <div class="save">
-          <button
-            type="submit"
-            [disabled]="phraseForm.pristine || phraseForm.invalid"
-            class="btn btn-success"
-          >Save</button>
-        </div>
-        <div class="delete">
-          <button
-            class="btn btn-danger"
-            (click)="delete()"
-          >Delete</button>
-        </div>
 
         <div class="title">
           <form-group name="title" [form]=phraseForm></form-group>
@@ -40,6 +28,20 @@
         </div>
         <div class="abc">
           <form-group name="abc" type="textarea" [rows]=10 [form]=phraseForm></form-group>
+        </div>
+
+        <div class="save">
+          <button
+            type="submit"
+            [disabled]="phraseForm.pristine || phraseForm.invalid"
+            class="btn btn-success"
+          >Save</button>
+        </div>
+        <div class="delete">
+          <button
+            class="btn btn-danger"
+            (click)="delete()"
+          >Delete</button>
         </div>
       </form>
     </div>
