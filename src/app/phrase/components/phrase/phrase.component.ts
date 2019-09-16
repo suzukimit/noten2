@@ -20,7 +20,7 @@ export class PhraseComponent extends AbstractComponent {
   keys = keys;
   lengths = lengths;
   meters = meters;
-  @ViewChild('abc') abcArea: ElementRef;
+  @ViewChild('abc', {static: true}) abcArea: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
