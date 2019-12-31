@@ -1,10 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Phrase} from '../../models/phrase';
 import {AbstractComponent} from '../../../common/abstract.component';
-import {select, Store} from '@ngrx/store';
-import {getPhrases} from '../../reducers/phrase.reducer';
+import {Store} from '@ngrx/store';
 import {Observable} from 'rxjs/Observable';
-import {LoadPhrases} from '../../actions/phrase.action';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AppState} from '../../../common/index';
 
@@ -15,7 +13,7 @@ import {AppState} from '../../../common/index';
   styleUrls: ['./phrases.component.scss']
 })
 export class PhrasesComponent extends AbstractComponent {
-  phrases$: Observable<Phrase[]>;
+  @Input() phrases$: Observable<Phrase[]>;
 
   constructor(
     private router: Router,
@@ -27,7 +25,5 @@ export class PhrasesComponent extends AbstractComponent {
 
   ngOnInit() {
     super.ngOnInit();
-    this.store.dispatch(new LoadPhrases());
-    this.phrases$ = this.store.pipe(select(getPhrases));
   }
 }

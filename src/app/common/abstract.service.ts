@@ -6,7 +6,7 @@ import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class AbstractService<T extends AbstractModel> {
-  private baseUrl = 'http://localhost:8080';
+  protected baseUrl = 'http://localhost:8080';
   protected entityName = '';
   protected httpOptions = {
     withCredentials: true,
@@ -15,7 +15,7 @@ export class AbstractService<T extends AbstractModel> {
     })
   };
 
-  constructor(private http: HttpClient) { }
+  constructor(protected http: HttpClient) { }
 
   getResources(): Observable<T[]> {
     return this.http.get<EmbeddedResource>(this.baseUrl + '/' + this.entityName, this.httpOptions)

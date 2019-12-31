@@ -1,13 +1,17 @@
 import {Component} from '@angular/core';
 import {Phrase} from '../phrase/models/phrase';
-import {Store} from '@ngrx/store';
-import {CreatePhrase} from '../phrase/actions/phrase.action';
+import {select, Store} from '@ngrx/store';
+import {CreatePhrase, LoadPhrases} from '../phrase/actions/phrase.action';
 import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {AppState} from '../common/index';
 import {ActivatedRoute} from '@angular/router';
 import {AbstractComponent} from '../common/abstract.component';
 import {NotebooksComponent} from '../notebook/components/notebooks/notebooks.component';
 import {Logout} from '../auth/actions/auth.actions';
+import {findPhrases} from '../phrase/actions/find-phrase.actions';
+import {Observable} from 'rxjs';
+import {getFindResults} from '../phrase/reducers/find-phrase.reducer';
+import {getPhrases} from '../phrase/reducers/phrase.reducer';
 
 @Component({
   templateUrl: './home.component.html',
@@ -16,6 +20,7 @@ import {Logout} from '../auth/actions/auth.actions';
 export class Home extends AbstractComponent {
   public isCollapsed = true;
   public closeResult = '';
+  public phrases$: Observable<Phrase[]>;
 
   constructor(
     private store: Store<AppState>,
@@ -28,8 +33,13 @@ export class Home extends AbstractComponent {
   ngOnInit(): void {
     this.subscriptions.push(
       // TODO notebookで絞る
-      this.router.queryParams.subscribe(val => console.log(val))
     );
+
+    this.store.dispatch(new LoadPhrases());
+    this.phrases$ = Observable.merge(
+      this.store.pipe(select(getPhrases)),
+      this.store.pipe(select(getFindResults))
+    ).filter(phrases => phrases.length > 0);
   }
 
   toggleMenu() {
@@ -42,6 +52,10 @@ export class Home extends AbstractComponent {
 
   logout() {
     this.store.dispatch(new Logout());
+  }
+
+  search(query: string) {
+    this.store.dispatch(findPhrases({ query }));
   }
 
   openNotebook() {

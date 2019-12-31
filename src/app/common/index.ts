@@ -1,11 +1,13 @@
 import {PhraseState} from '../phrase/reducers/phrase.reducer';
 import {NotebookState} from '../notebook/reducers/notebook.reducer';
 import {RouterStateSnapshot} from '@angular/router';
+import {FindPhraseState} from '../phrase/reducers/find-phrase.reducer';
 
 // TODO これは必要？
 // index.ts -> https://stackoverflow.com/questions/37564906/what-are-all-the-index-ts-used-for
 export interface AppState {
   phrase: PhraseState;
+  findPhrase: FindPhraseState;
   notebook: NotebookState;
 }
 

@@ -101,4 +101,4 @@ export const getPhraseId = createSelector(getPhraseEntityState, getSelectedId);
 export const getPhraseEntities = createSelector(getPhraseEntityState, getEntities);
 export const getPhrase = createSelector(getPhraseEntities, getPhraseId, (entities, id) => {
   return id && entities[id];
-})
+});

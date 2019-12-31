@@ -33,6 +33,8 @@ import {HttpErrorInterceptor} from './common/http.error.interceptor';
 import {SignupComponent} from './auth/components/signup/signup.component';
 import {FormGroupComponent} from './common/form-group/form.group.component';
 import {TokenInterceptor} from './common/token.interceptor';
+import * as fromFindPhrase from './phrase/reducers/find-phrase.reducer';
+import {FindPhraseEffects} from './phrase/effects/find-phrase.effects';
 
 
 @NgModule({
@@ -58,6 +60,7 @@ import {TokenInterceptor} from './common/token.interceptor';
     AngularFontAwesomeModule,
     StoreModule.forRoot({
       phrase: phraseReducer,
+      findPhrase: fromFindPhrase.reducer,
       notebook: notebookReducer,
       router: routerReducer,
     }),
@@ -66,6 +69,7 @@ import {TokenInterceptor} from './common/token.interceptor';
     ),
     EffectsModule.forRoot([
       PhraseEffects,
+      FindPhraseEffects,
       NotebookEffects,
     ]),
     EffectsModule.forFeature([
