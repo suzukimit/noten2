@@ -23,7 +23,6 @@ export class NotebooksComponent extends AbstractComponent {
   }
 
   ngOnInit(): void {
-    this.store.dispatch(new LoadNotebooks());
     this.notebook$ = this.store.pipe(select(getNotebooks));
   }
 }

@@ -12,6 +12,7 @@ import {findPhrases} from '../phrase/actions/find-phrase.actions';
 import {Observable} from 'rxjs';
 import {getFindResults} from '../phrase/reducers/find-phrase.reducer';
 import {getPhrases} from '../phrase/reducers/phrase.reducer';
+import {LoadNotebooks} from '../notebook/actions/notebook.action';
 
 @Component({
   templateUrl: './home.component.html',
@@ -36,6 +37,7 @@ export class Home extends AbstractComponent {
     );
 
     this.store.dispatch(new LoadPhrases());
+    this.store.dispatch(new LoadNotebooks());
     this.phrases$ = Observable.merge(
       this.store.pipe(select(getPhrases)),
       this.store.pipe(select(getFindResults))

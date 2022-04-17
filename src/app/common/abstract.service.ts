@@ -1,6 +1,6 @@
 import 'rxjs/Rx'
 import {AbstractModel, EmbeddedResource} from './abstract.model';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 
@@ -17,13 +17,15 @@ export class AbstractService<T extends AbstractModel> {
 
   constructor(protected http: HttpClient) { }
 
-  getResources(): Observable<T[]> {
-    return this.http.get<EmbeddedResource>(this.baseUrl + '/' + this.entityName, this.httpOptions)
+  getResources(params: HttpParams = null): Observable<T[]> {
+    const options = params? Object.assign(this.httpOptions, {params: params}) : this.httpOptions;
+    return this.http.get<EmbeddedResource>(this.baseUrl + '/' + this.entityName, options)
       .map(res => res._embedded[this.entityName] as T[]);
   }
 
-  getResource(id: number): Observable<T> {
-    return this.http.get<T>(this.baseUrl + '/' + this.entityName + '/' + id, this.httpOptions);
+  getResource(id: number, params: HttpParams = null): Observable<T> {
+    const options = params? Object.assign(this.httpOptions, {params: params}) : this.httpOptions;
+    return this.http.get<T>(this.baseUrl + '/' + this.entityName + '/' + id, options);
   }
 
   createResource(model: any): Observable<T>  {

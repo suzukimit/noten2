@@ -1,4 +1,5 @@
 import {AbstractModel} from '../../common/abstract.model';
+import {Notebook} from '../../notebook/models/notebook';
 
 export class Phrase extends AbstractModel {
   title = '';
@@ -7,6 +8,7 @@ export class Phrase extends AbstractModel {
   reference = '';
   key = '';
   abc = '';
+  notebook: Notebook = null;
 
   toString(): string {
     return `

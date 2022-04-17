@@ -23,6 +23,7 @@ import {
 } from '../actions/phrase.action';
 import {Router} from '@angular/router';
 import {Phrase} from '../models/phrase';
+import {HttpParams} from '@angular/common/http';
 
 /**
  * Effects
@@ -44,7 +45,7 @@ export class PhraseEffects {
     ofType<LoadPhrase>(PhraseActionTypes.LoadPhrase),
     switchMap(action =>
       this.phraseService
-        .getResource(action.payload)
+        .getResource(action.payload, new HttpParams().set('projection', 'detail'))
         .pipe(
           map(data => new LoadPhraseSuccess({ phrase: data })),
           catchError(error => of(new LoadPhraseFail({ error })))
@@ -60,7 +61,7 @@ export class PhraseEffects {
     ofType<LoadPhrases>(PhraseActionTypes.LoadPhrases),
     switchMap(action =>
       this.phraseService
-        .getResources()
+        .getResources(new HttpParams().set('projection', 'list'))
         .pipe(
           map(data => new LoadPhrasesSuccess({ phrases: data })),
           catchError(error => of(new LoadPhrasesFail({ error })))

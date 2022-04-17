@@ -29,6 +29,9 @@
         <div class="abc">
           <form-group name="abc" type="textarea" [rows]=10 [form]=phraseForm></form-group>
         </div>
+        <div class="notebook" *ngIf="notebooks$ | async">
+          <form-group name="notebook" type="select" [options]="notebookNames()" [form]=phraseForm></form-group>
+        </div>
 
         <div class="save">
           <button
