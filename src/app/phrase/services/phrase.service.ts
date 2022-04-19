@@ -3,7 +3,9 @@ import {Phrase} from '../models/phrase';
 import {Observable} from 'rxjs';
 import {EmbeddedResource} from '../../common/abstract.model';
 import {HttpParams} from '@angular/common/http';
+import { Injectable } from "@angular/core";
 
+@Injectable()
 export class PhraseService extends AbstractService<Phrase> {
   entityName = 'phrases';
 

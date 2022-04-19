@@ -9,7 +9,6 @@ import {Welcome} from './welcome/welcome.component';
 import {Home} from './home/home.component';
 import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {AngularFontAwesomeModule} from 'angular-font-awesome';
 import {PhrasesComponent} from './phrase/components/phrases/phrases.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {PhraseService} from './phrase/services/phrase.service';
@@ -35,6 +34,7 @@ import {FormGroupComponent} from './common/form-group/form.group.component';
 import {TokenInterceptor} from './common/token.interceptor';
 import * as fromFindPhrase from './phrase/reducers/find-phrase.reducer';
 import {FindPhraseEffects} from './phrase/effects/find-phrase.effects';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -53,11 +53,11 @@ import {FindPhraseEffects} from './phrase/effects/find-phrase.effects';
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgbModule.forRoot(),
+    NgbModule,
     AppRoutingModule,
     CommonModule,
     FormsModule,
-    AngularFontAwesomeModule,
+    FontAwesomeModule,
     StoreModule.forRoot({
       phrase: phraseReducer,
       findPhrase: fromFindPhrase.reducer,
@@ -78,6 +78,7 @@ import {FindPhraseEffects} from './phrase/effects/find-phrase.effects';
     StoreRouterConnectingModule.forRoot({
       stateKey: 'router',
     }),
+    FontAwesomeModule,
 
   ],
   providers: [
