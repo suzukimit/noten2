@@ -22,7 +22,7 @@ import {notebookReducer} from './notebook/reducers/notebook.reducer';
 import {NotebookEffects} from './notebook/effects/notebook.effect';
 import {NotebookService} from './notebook/services/notebook.service';
 import {Login} from './auth/components/login/login.component';
-import {routerReducer, StoreRouterConnectingModule} from '@ngrx/router-store';
+import {routerReducer, StoreRouterConnectingModule, DefaultRouterStateSerializer} from '@ngrx/router-store';
 import {AuthGuard} from './auth/services/auth-guard.service';
 import {AuthService} from './auth/services/auth.service';
 import {reducers} from './auth/reducers/index';
@@ -75,7 +75,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     EffectsModule.forFeature([
       AuthEffects,
     ]),
-    StoreRouterConnectingModule.forRoot({
+    StoreRouterConnectingModule.forRoot({ serializer: DefaultRouterStateSerializer,
       stateKey: 'router',
     }),
     FontAwesomeModule,

@@ -1,5 +1,6 @@
-import {OnDestroy, OnInit} from '@angular/core';
+import { OnDestroy, OnInit, Directive } from '@angular/core';
 import {Subscription} from 'rxjs/Subscription';
+@Directive()
 export abstract class AbstractComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
