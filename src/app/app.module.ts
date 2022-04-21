@@ -35,6 +35,7 @@ import {TokenInterceptor} from './common/token.interceptor';
 import * as fromFindPhrase from './phrase/reducers/find-phrase.reducer';
 import {FindPhraseEffects} from './phrase/effects/find-phrase.effects';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ModalComponent } from './common/modal/modal.component';
 
 
 @NgModule({
@@ -96,7 +97,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
   ],
   entryComponents: [
-    NotebooksComponent
+    NotebooksComponent,
+    ModalComponent,
   ],
   bootstrap: [AppComponent]
 })

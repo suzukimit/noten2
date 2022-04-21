@@ -14,5 +14,11 @@
     <h6 class="card-title">
       <a [routerLink]="[phrase.id]">{{phrase.title}}</a>
     </h6>
+    <div ngbDropdown class="d-inline-block menu">
+      <button class="btn btn-outline-primary" [id]="'dropdownMenuButton-' + phrase.id" ngbDropdownToggle>Menu</button>
+      <div ngbDropdownMenu [attr.aria-labelledby]="'dropdownMenuButton-' + phrase.id">
+        <button class="dropdown-item" (click)="delete(phrase)">Delete</button>
+      </div>
+    </div>
   </div>
 </div>

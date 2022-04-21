@@ -4,9 +4,9 @@ import {AbstractComponent} from '../../../common/abstract.component';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {select, Store} from '@ngrx/store';
+import {Store} from '@ngrx/store';
 import {getPhrase, PhraseState} from '../../reducers/phrase.reducer';
-import {DeletePhrase, LoadPhrase, UpdatePhrase} from '../../actions/phrase.action';
+import {LoadPhrase, UpdatePhrase} from '../../actions/phrase.action';
 import {Notebook} from '../../../notebook/models/notebook';
 import {getNotebooks} from '../../../notebook/reducers/notebook.reducer';
 
@@ -79,10 +79,6 @@ export class PhraseComponent extends AbstractComponent {
     this.store.dispatch(new UpdatePhrase({phrase: this.phrase}));
   }
 
-  delete() {
-    this.store.dispatch(new DeletePhrase({id: this.phrase.id.toString()}));
-  }
-
   private createForm() {
     this.phraseForm = this.fb.group({
       title: ['', Validators.required],
@@ -103,7 +99,7 @@ export class PhraseComponent extends AbstractComponent {
       reference: this.phrase.reference,
       key: this.phrase.key,
       abc: this.phrase.abc,
-      notebook: this.phrase.notebook,
+      notebook: this.phrase.notebook ? this.phrase.notebook.name : '',
     });
   }
 

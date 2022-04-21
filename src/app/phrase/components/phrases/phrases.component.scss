@@ -5,3 +5,12 @@ div.header {
     }
   }
 }
+
+div.card {
+  div.card-body {
+    display: flex;
+  }
+  .card-title {
+    margin-right: auto;
+  }
+}
