@@ -63,6 +63,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
       findPhrase: fromFindPhrase.reducer,
       notebook: notebookReducer,
       router: routerReducer,
+    }, {
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false,
+      },
     }),
     StoreModule.forFeature(
       'auth', reducers
