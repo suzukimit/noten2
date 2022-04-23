@@ -17,7 +17,7 @@
     <div ngbDropdown class="d-inline-block menu">
       <button class="btn btn-outline-primary" [id]="'dropdownMenuButton-' + phrase.id" ngbDropdownToggle>Menu</button>
       <div ngbDropdownMenu [attr.aria-labelledby]="'dropdownMenuButton-' + phrase.id">
-        <button class="dropdown-item" (click)="delete(phrase)">Delete</button>
+        <button class="dropdown-item" (click)="delete(phrase)"><fa-icon [icon]=faTrash></fa-icon><span class="ml-2">Delete</span></button>
       </div>
     </div>
   </div>

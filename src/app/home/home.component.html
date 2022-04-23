@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-light">
   <a class="navbar-brand h1" href="#">
-    <fa-icon [icon]="faMusic" class="text-info"></fa-icon>Noten
+    <fa-icon [icon]="faMusic" class="text-info"></fa-icon><span class="ml-1">Noten</span>
   </a>
 
   <ul class="navbar-nav mr-auto mt-2 mt-lg-0 buttons">
@@ -32,10 +32,9 @@
 
   <div ngbDropdown class="d-inline-block account">
     <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Account</button>
-    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-      <button class="dropdown-item">Profile</button>
-      <button class="dropdown-item">Settings</button>
-      <button class="dropdown-item" (click)="logout()">Log out</button>
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu-right">
+      <button class="dropdown-item"><fa-icon [icon]=faSettings></fa-icon><span class="ml-2">Settings</span></button>
+      <button class="dropdown-item" (click)="logout()"><fa-icon [icon]=faLogout></fa-icon><span class="ml-2">Log out</span></button>
     </div>
   </div>
 </nav>

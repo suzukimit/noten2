@@ -13,7 +13,7 @@ import {Observable} from 'rxjs';
 import {getFindResults} from '../phrase/reducers/find-phrase.reducer';
 import {getPhrases} from '../phrase/reducers/phrase.reducer';
 import {LoadNotebooks} from '../notebook/actions/notebook.action';
-import {faBook, faMusic, faPlus, faSearch, faTags} from '@fortawesome/free-solid-svg-icons';
+import {faBook, faMusic, faPlus, faSearch, faSignOut, faTags, faWrench} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   templateUrl: './home.component.html',
@@ -28,6 +28,8 @@ export class Home extends AbstractComponent {
   public faBook = faBook;
   public faTags = faTags;
   public faSearch = faSearch;
+  public faSettings = faWrench;
+  public faLogout = faSignOut;
 
   constructor(
     private store: Store<AppState>,

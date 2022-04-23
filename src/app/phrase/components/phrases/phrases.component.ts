@@ -8,6 +8,7 @@ import {AppState} from '../../../common/index';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModalComponent} from '../../../common/modal/modal.component';
 import {DeletePhrase} from '../../actions/phrase.action';
+import {faTrash} from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -17,6 +18,7 @@ import {DeletePhrase} from '../../actions/phrase.action';
 })
 export class PhrasesComponent extends AbstractComponent {
   @Input() phrases$: Observable<Phrase[]>;
+  faTrash = faTrash;
 
   constructor(
     private router: Router,
