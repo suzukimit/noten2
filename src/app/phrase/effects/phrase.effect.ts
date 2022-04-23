@@ -24,6 +24,7 @@ import {
 import {Router} from '@angular/router';
 import {Phrase} from '../models/phrase';
 import {HttpParams} from '@angular/common/http';
+import {ToastService} from '../../common/toast/service/toast.service';
 
 /**
  * Effects
@@ -35,6 +36,7 @@ export class PhraseEffects {
     private actions$: Actions,
     private phraseService: PhraseService,
     private router: Router,
+    private toastService: ToastService,
   ) {}
 
   /**
@@ -125,6 +127,7 @@ export class PhraseEffects {
     ofType<CreatePhraseSuccess>(PhraseActionTypes.CreatePhraseSuccess),
     tap((res: CreatePhraseSuccess) => {
       this.router.navigate(['/home', res.payload.phrase.id])
+      this.toastService.show('Create Phrase Succeeded!', { classname: 'bg-success text-light', delay: 5000 });
     }),
   );
 
@@ -136,6 +139,7 @@ export class PhraseEffects {
     ofType<DeletePhraseSuccess>(PhraseActionTypes.DeletePhraseSuccess),
     tap(() => {
       this.router.navigate(['/home'])
+      this.toastService.show('Delete Phrase Succeeded!', { classname: 'bg-success text-light', delay: 5000 });
     }),
   );
 }

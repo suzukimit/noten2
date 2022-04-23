@@ -36,6 +36,7 @@ import * as fromFindPhrase from './phrase/reducers/find-phrase.reducer';
 import {FindPhraseEffects} from './phrase/effects/find-phrase.effects';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ModalComponent } from './common/modal/modal.component';
+import { ToastComponent } from './common/toast/component/toast.component';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { ModalComponent } from './common/modal/modal.component';
     Login,
     SignupComponent,
     FormGroupComponent,
+    ToastComponent,
   ],
   imports: [
     BrowserModule,
