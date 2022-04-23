@@ -38,7 +38,10 @@ export class PhraseComponent extends AbstractComponent {
 
   ngOnInit() {
     super.ngOnInit();
-    new ABCJS.Editor('abc', { paper_id: 'paper0', warnings_id: 'warnings' });
+    new ABCJS.Editor('abc', { paper_id: 'paper0', warnings_id: 'warnings', abcjsParams: {
+        responsive: "resize"
+      },
+    });
     this.phrase$ = this.store.select(getPhrase);
     this.notebooks$ = this.store.select(getNotebooks);
 
