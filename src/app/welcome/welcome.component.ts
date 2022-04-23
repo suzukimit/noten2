@@ -11,6 +11,7 @@ import {AuthService} from '../auth/services/auth.service';
 })
 export class Welcome extends AbstractComponent {
   loggedIn = false;
+  year = new Date().getFullYear();
 
   constructor(
     private router: Router,
