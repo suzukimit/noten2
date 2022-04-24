@@ -19,17 +19,17 @@ import javax.persistence.*
 abstract class AbstractEntity: Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0
+    open var id: Long = 0
 
     @ManyToOne
 //    @CreatedBy
-    var user: User? = null
+    open var user: User? = null
 
     @Column(updatable = false)
-    var createdAt: LocalDateTime? = null
+    open var createdAt: LocalDateTime? = null
 
     @Column
-    var updatedAt: LocalDateTime? = null
+    open var updatedAt: LocalDateTime? = null
 
     @PrePersist
     fun prePersist() {
@@ -47,7 +47,7 @@ abstract class AbstractEntity: Serializable {
     }
 
     @Version
-    val version: Long = 0L
+    open val version: Long = 0L
 }
 
 //@Component
