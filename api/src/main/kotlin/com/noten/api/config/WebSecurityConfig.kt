@@ -20,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -33,7 +32,6 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
@@ -65,9 +63,6 @@ open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     lateinit var userDetailsService: LoginUserDetailsService
-
-    @Autowired
-    lateinit var passwordEncoder: PasswordEncoder
 
     override fun configure(http: HttpSecurity?) {
         http?.let {
@@ -115,7 +110,7 @@ open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         auth?.let {
             it.eraseCredentials(true)
                     .userDetailsService(userDetailsService)
-                    .passwordEncoder(passwordEncoder)
+                    .passwordEncoder(passwordEncoder())
         }
         super.configure(auth)
     }
@@ -124,9 +119,6 @@ open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     open fun passwordEncoder() : PasswordEncoder {
         return BCryptPasswordEncoder()
     }
-
-    @Bean
-    open fun securityExtension(): SecurityEvaluationContextExtension = SecurityEvaluationContextExtension()
 
     /**
      * CORSの設定

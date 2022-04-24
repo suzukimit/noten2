@@ -1,6 +1,7 @@
 package com.noten.api.config
 
 import com.noten.api.entity.AbstractEntity
+import com.noten.api.entity.UserValidator
 import org.springframework.aop.aspectj.AspectJExpressionPointcut
 import org.springframework.aop.support.DefaultPointcutAdvisor
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,16 +9,18 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration
+import org.springframework.data.rest.core.event.ValidatingRepositoryEventListener
 import org.springframework.data.rest.core.mapping.RepositoryDetectionStrategy
-import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter
+import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.interceptor.DefaultTransactionAttribute
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource
 import org.springframework.transaction.interceptor.TransactionInterceptor
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 
 @Configuration
 //@EnableJpaAuditing
-class RepositoryConfig: RepositoryRestConfigurerAdapter() {
+class RepositoryConfig: RepositoryRestConfigurer {
 
     @Autowired
     lateinit var securityProperties : SecurityProperties
@@ -28,12 +31,16 @@ class RepositoryConfig: RepositoryRestConfigurerAdapter() {
     @Autowired
     lateinit var txManager : PlatformTransactionManager
 
-    override fun configureRepositoryRestConfiguration(config: RepositoryRestConfiguration?) {
+    override fun configureRepositoryRestConfiguration(config: RepositoryRestConfiguration?, cors: CorsRegistry?) {
         config?.let {
             it
                     .exposeIdsFor(*entities.map { it.javaClass }.toTypedArray())
                     .setRepositoryDetectionStrategy(RepositoryDetectionStrategy.RepositoryDetectionStrategies.ANNOTATED)
         }
+    }
+
+    override fun configureValidatingRepositoryEventListener(validatingListener: ValidatingRepositoryEventListener?) {
+        validatingListener?.addValidator("beforeCreate", UserValidator())
     }
 
     @Bean
