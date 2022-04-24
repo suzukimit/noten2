@@ -3,14 +3,9 @@ INSERT INTO `user` (`id`, `created_at`, `updated_at`, `version`, `name`, `user_i
 VALUES
 	(1, NULL, NULL, 0, 'user', 1, '$2a$10$zwzBS66AQnUDXblnki/QKeF9zVvlZaSfBIL6wDKTvXv/YUPBzvkfa', 'test@noten.com');
 
-INSERT INTO `sample` (`id`, `name`, `version`)
-VALUES
-  (1, 'sample', 0);
-
 INSERT INTO `notebook` (`id`, `created_at`, `updated_at`, `version`, `name`, `user_id`)
 VALUES
 	(1, NULL, NULL, 0, '1st-book', 1);
-
 
 INSERT INTO `phrase` (`id`, `created_at`, `updated_at`, `version`, `abc`, `key`, `length`, `meter`, `reference`, `title`, `user_id`, `notebook_id`)
 VALUES
