@@ -1,0 +1,14 @@
+.DS_STORE
+
+/dist/
+/bazel-out
+/integration/bazel/bazel-*
+*.log
+node_modules
+
+### IntelliJ IDEA ###
+*.iws
+*.iml
+*.ipr
+.idea
+idea_root

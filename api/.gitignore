@@ -4,6 +4,14 @@ build
 !gradle/wrapper/gradle-wrapper.jar
 */out
 
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
 ### IntelliJ IDEA ###
 *.iws
 *.iml

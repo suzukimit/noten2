@@ -1,12 +1,13 @@
-import 'rxjs/Rx'
 import {AbstractModel, EmbeddedResource} from './abstract.model';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
+import {environment} from '../../environments/environment';
+import {map} from 'rxjs/operators';
 
 @Injectable()
 export class AbstractService<T extends AbstractModel> {
-  protected baseUrl = 'http://localhost:8080';
+  protected baseUrl = environment.baseUrl;
   protected entityName = '';
   protected httpOptions = {
     withCredentials: true,
@@ -19,8 +20,9 @@ export class AbstractService<T extends AbstractModel> {
 
   getResources(params: HttpParams = null): Observable<T[]> {
     const options = params? Object.assign({}, this.httpOptions, {params: params}) : this.httpOptions;
-    return this.http.get<EmbeddedResource>(this.baseUrl + '/' + this.entityName, options)
-      .map(res => res._embedded[this.entityName] as T[]);
+    return this.http.get<EmbeddedResource>(this.baseUrl + '/' + this.entityName, options).pipe(
+      map(res => res._embedded[this.entityName] as T[])
+    )
   }
 
   getResource(id: number, params: HttpParams = null): Observable<T> {

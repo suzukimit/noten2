@@ -4,10 +4,11 @@ import { Authenticate, User } from '../models/user';
 import {of} from 'rxjs/observable/of';
 import {Observable} from 'rxjs/Observable';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
 
 @Injectable()
 export class AuthService {
-  private baseUrl = 'http://localhost:8080';
+  private baseUrl = environment.baseUrl;
   protected httpOptions = {
     withCredentials: true,
     headers: new HttpHeaders({

@@ -2,6 +2,7 @@ import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest}
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Router} from '@angular/router';
+import {tap} from 'rxjs/operators';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
@@ -9,7 +10,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   constructor(private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(req).do(
+    return next.handle(req).pipe(tap(
       (event: HttpEvent<any>) => {},
       (err: any) => {
         if (err instanceof HttpErrorResponse) {
@@ -21,6 +22,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
               return;
           }
         }
-      });
+      }));
   }
 }

@@ -9,11 +9,12 @@ import {AbstractComponent} from '../common/abstract.component';
 import {NotebooksComponent} from '../notebook/components/notebooks/notebooks.component';
 import {Logout} from '../auth/actions/auth.actions';
 import {findPhrases} from '../phrase/actions/find-phrase.actions';
-import {Observable} from 'rxjs';
+import {merge, Observable} from 'rxjs';
 import {getFindResults} from '../phrase/reducers/find-phrase.reducer';
 import {getPhrases} from '../phrase/reducers/phrase.reducer';
 import {LoadNotebooks} from '../notebook/actions/notebook.action';
 import {faBook, faMusic, faPlus, faSearch, faSignOut, faTags, faWrench} from '@fortawesome/free-solid-svg-icons';
+import {filter} from 'rxjs/operators';
 
 @Component({
   templateUrl: './home.component.html',
@@ -46,10 +47,10 @@ export class Home extends AbstractComponent {
 
     this.store.dispatch(new LoadPhrases());
     this.store.dispatch(new LoadNotebooks());
-    this.phrases$ = Observable.merge(
+    this.phrases$ = merge(
       this.store.pipe(select(getPhrases)),
       this.store.pipe(select(getFindResults))
-    ).filter(phrases => phrases.length > 0);
+    ).pipe(filter(phrases => phrases.length > 0));
   }
 
   toggleMenu() {
