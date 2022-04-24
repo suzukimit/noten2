@@ -12,6 +12,7 @@ import * as AuthActions from '../../actions/auth.actions';
 export class Login {
   pending$ = this.store.pipe(select(fromAuth.getLoginPagePending));
   error$ = this.store.pipe(select(fromAuth.getLoginPageError));
+  afterSignup$ = this.store.pipe(select(fromAuth.getLoginPageAfterSignup));
 
   constructor(
     private store: Store<fromAuth.State>

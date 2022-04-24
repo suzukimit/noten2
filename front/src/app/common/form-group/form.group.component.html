@@ -7,7 +7,7 @@
     type={{type}}
     class="form-control"
     id={{name}}
-    placeholder={{name}}
+    [placeholder]="placeHolder ? placeHolder : name"
     [formControlName]="controlName ? controlName : name">
   <select
     *ngIf=isSelectType()

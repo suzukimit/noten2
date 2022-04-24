@@ -7,7 +7,7 @@ import {
   AuthActionTypes,
   Login,
   LoginFailure,
-  LoginSuccess, Signup,
+  LoginSuccess, Signup, SignupFailure, SignupSuccess,
 } from '../actions/auth.actions';
 import { Authenticate } from '../models/user';
 import { AuthService } from '../services/auth.service';
@@ -75,15 +75,18 @@ export class AuthEffects {
       this.authService
         .signup(auth)
         .pipe(
-          map(user => new LoginSuccess({
-            user: {
-              name: '',
-              token: 'todo'
-            }
-          })),
-          catchError(error => of(new LoginFailure(error)))
+          map(user => new SignupSuccess()),
+          catchError(error => of(new SignupFailure(error)))
         )
     )
+  );
+
+  @Effect({ dispatch: false })
+  signupSuccess$ = this.actions$.pipe(
+    ofType(AuthActionTypes.SignupSuccess),
+    tap(() => {
+      this.router.navigate(['/home'])
+    })
   );
 
   constructor(

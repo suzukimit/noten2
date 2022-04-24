@@ -13,6 +13,7 @@ export class FormGroupComponent implements OnInit {
   @Input() name: string = '';
   @Input() labelName: string = '';
   @Input() controlName: string = '';
+  @Input() placeHolder: string = '';
   @Input() options: string[] = [];
   @Input() rows: number = 0;
 
@@ -21,7 +22,7 @@ export class FormGroupComponent implements OnInit {
       this.labelName = this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
     }
   }
-  
+
   isInputType(): boolean {
     return ['text', 'email', 'password'].includes(this.type);
   }

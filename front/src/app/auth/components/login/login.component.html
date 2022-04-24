@@ -1,6 +1,9 @@
 <p *ngIf="error$ | async as error">
   <ngb-alert [dismissible]="false">{{error}}</ngb-alert>
 </p>
+<p *ngIf="afterSignup$ | async as afterSignup">
+  <ngb-alert type="success" [dismissible]="false">サインアップに成功しました。ログインしてください。</ngb-alert>
+</p>
 <div class="container">
   <form [formGroup]="form" (ngSubmit)="submit()">
     <form-group
@@ -18,6 +21,6 @@
     <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
   </form>
   <div class="signup">
-    <a routerLink="/signup">signup</a>
+    <a routerLink="/signup">アカウントを作成</a>
   </div>
 </div>
