@@ -1,5 +1,6 @@
 package com.noten.api.entity
 
+import org.hibernate.annotations.Filter
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
 import org.springframework.data.rest.core.config.Projection
 import org.springframework.stereotype.Component
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotEmpty
 
 @Component
 @Entity
+@Filter(name = UserFilterAdvisor.FILTER_NAME, condition = "user_id = :userId")
 class Phrase: AbstractEntity() {
     @Column(nullable = false)
     @NotEmpty

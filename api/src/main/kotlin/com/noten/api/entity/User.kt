@@ -1,6 +1,9 @@
 package com.noten.api.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.annotations.Filter
+import org.hibernate.annotations.FilterDef
+import org.hibernate.annotations.ParamDef
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
 import org.springframework.stereotype.Component
@@ -16,6 +19,8 @@ import javax.validation.constraints.NotEmpty
 @Component
 @Entity
 @Table(uniqueConstraints = [(UniqueConstraint(columnNames = ["email"]))])
+@Filter(name = UserFilterAdvisor.FILTER_NAME, condition = "user_id = :userId")
+@FilterDef(name = UserFilterAdvisor.FILTER_NAME, parameters = [ParamDef(name = UserFilterAdvisor.PARAMETER, type = "long")])
 class User: AbstractEntity() {
     @Column
     var name: String = ""
