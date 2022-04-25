@@ -18,6 +18,7 @@ export function reducer(state = initialState, action: AuthActionsUnion): State {
       return {
         ...state,
         error: null,
+        afterSignup: false,
         pending: true,
       };
     }
@@ -44,6 +45,7 @@ export function reducer(state = initialState, action: AuthActionsUnion): State {
     case AuthActionTypes.SignupSuccess: {
       return {
         ...state,
+        error: null,
         afterSignup: true,
       }
     }
