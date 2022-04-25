@@ -40,6 +40,7 @@ class RepositoryConfig: RepositoryRestConfigurer {
     }
 
     override fun configureValidatingRepositoryEventListener(validatingListener: ValidatingRepositoryEventListener?) {
+        //TODO 全部登録する
         validatingListener?.addValidator("beforeCreate", UserValidator())
     }
 
