@@ -127,7 +127,18 @@ export class PhraseEffects {
     ofType<CreatePhraseSuccess>(PhraseActionTypes.CreatePhraseSuccess),
     tap((res: CreatePhraseSuccess) => {
       this.router.navigate(['/home', res.payload.phrase.id])
-      this.toastService.show('Create Phrase Succeeded!', { classname: 'bg-success text-light', delay: 5000 });
+      this.toastService.show('フレーズを作成しました', { classname: 'bg-success text-light', delay: 5000 });
+    }),
+  );
+
+  /**
+   * Update Success
+   */
+  @Effect({ dispatch: false })
+  updatePhraseSuccess$: Observable<Action> = this.actions$.pipe(
+    ofType<UpdatePhraseSuccess>(PhraseActionTypes.UpdatePhraseSuccess),
+    tap((res: UpdatePhraseSuccess) => {
+      this.toastService.show('フレーズを更新しました', { classname: 'bg-success text-light', delay: 5000 });
     }),
   );
 
@@ -139,7 +150,7 @@ export class PhraseEffects {
     ofType<DeletePhraseSuccess>(PhraseActionTypes.DeletePhraseSuccess),
     tap(() => {
       this.router.navigate(['/home'])
-      this.toastService.show('Delete Phrase Succeeded!', { classname: 'bg-success text-light', delay: 5000 });
+      this.toastService.show('フレーズを削除しました', { classname: 'bg-success text-light', delay: 5000 });
     }),
   );
 }
