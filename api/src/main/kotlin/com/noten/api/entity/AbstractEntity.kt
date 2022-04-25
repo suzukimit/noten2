@@ -38,6 +38,9 @@ abstract class AbstractEntity: Serializable {
             createdAt = this
             updatedAt = this
         }
+        (RequestContextHolder.getRequestAttributes()?.getAttribute(LoginUserResolver.ATTRIBUTE_KEY, RequestAttributes.SCOPE_REQUEST) as? User)?.let {
+            user = it
+        }
     }
 
     @PreUpdate
