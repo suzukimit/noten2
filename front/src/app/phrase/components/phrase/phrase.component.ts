@@ -3,12 +3,13 @@ import {keys, lengths, meters, Phrase} from '../../models/phrase';
 import {AbstractComponent} from '../../../common/abstract.component';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Store} from '@ngrx/store';
 import {getPhrase, PhraseState} from '../../reducers/phrase.reducer';
 import {LoadPhrase, UpdatePhrase} from '../../actions/phrase.action';
 import {Notebook} from '../../../notebook/models/notebook';
 import {getNotebooks} from '../../../notebook/reducers/notebook.reducer';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'phrase',
@@ -17,7 +18,6 @@ import {getNotebooks} from '../../../notebook/reducers/notebook.reducer';
 })
 export class PhraseComponent extends AbstractComponent {
   phrase$: Observable<Phrase>;
-  phrase: Phrase = null;
   notebooks$: Observable<Notebook[]>;
   notebooks: Notebook[] = [];
   phraseForm: FormGroup;
@@ -47,7 +47,7 @@ export class PhraseComponent extends AbstractComponent {
 
     this.subscriptions.push(
       this.route.paramMap.subscribe(this.onLoad.bind(this)),
-      this.phrase$.subscribe(this.onSelectPhrase.bind(this)),
+      this.phrase$.pipe(filter(phrase => phrase != null && phrase != undefined)).subscribe(this.onSelectPhrase.bind(this)),
       this.notebooks$.subscribe(this.onSelectNotebooks.bind(this))
     );
   }
@@ -57,9 +57,7 @@ export class PhraseComponent extends AbstractComponent {
   }
 
   onSelectPhrase(phrase: Phrase) {
-    this.phrase = Object.assign(new Phrase(), phrase);
-
-    this.rebuildForm();
+    this.rebuildForm(phrase);
     this.updatePaper();
 
     this.phraseForm.valueChanges.forEach(
@@ -78,50 +76,52 @@ export class PhraseComponent extends AbstractComponent {
   }
 
   save() {
-    this.phrase = this.prepareSave();
-    this.store.dispatch(new UpdatePhrase({phrase: this.phrase}));
+    this.store.dispatch(new UpdatePhrase({phrase: this.prepareSave()}));
   }
 
   private createForm() {
     this.phraseForm = this.fb.group({
+      id: [0, Validators.required],
       title: ['', Validators.required],
       meter: ['', Validators.required],
       length: ['', Validators.required],
       reference: '',
       key: ['', Validators.required],
       abc: ['', Validators.required],
-      notebook: ['', Validators.required],
+      notebook: [0, Validators.required],
     });
   }
 
-  private rebuildForm() {
+  private rebuildForm(phrase: Phrase) {
     this.phraseForm.reset({
-      title: this.phrase.title,
-      meter: this.phrase.meter,
-      length: this.phrase.length,
-      reference: this.phrase.reference,
-      key: this.phrase.key,
-      abc: this.phrase.abc,
-      notebook: this.phrase.notebook ? this.phrase.notebook.name : '',
+      id: phrase.id,
+      title: phrase.title,
+      meter: phrase.meter,
+      length: phrase.length,
+      reference: phrase.reference,
+      key: phrase.key,
+      abc: phrase.abc,
+      notebook: phrase.notebook.id,
     });
   }
 
   private prepareSave(): Phrase {
     const formModel = this.phraseForm.value;
     return Object.assign(new Phrase(), {
-      id: this.phrase.id,
+      id: formModel.id,
       title: formModel.title as string,
       meter: formModel.meter as string,
       length: formModel.length as string,
       reference: formModel.reference as string,
       key: formModel.key as string,
       abc: formModel.abc as string,
+      notebook: this.notebooks.find(notebook => notebook.id == formModel.notebook),
     });
   }
 
   private updatePaper() {
-    this.phrase = this.prepareSave();
-    this.abcArea.nativeElement.value = this.phrase.toString();
+    const phrase = this.prepareSave();
+    this.abcArea.nativeElement.value = phrase.toString();
     this.abcArea.nativeElement.dispatchEvent(new Event('change'));
   }
 }

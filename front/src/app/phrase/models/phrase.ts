@@ -22,6 +22,18 @@ ${this.abc}
     `
   }
 
+  toJSON(): any {
+    return {
+      title: this.title,
+      meter: this.meter,
+      length: this.length,
+      reference: this.reference,
+      key: this.key,
+      abc: this.abc,
+      notebook: this.notebook ? this.notebook._links.self.href : null,
+    }
+  }
+
   static createDefault() {
     const phrase = new Phrase();
     phrase.title = 'new';

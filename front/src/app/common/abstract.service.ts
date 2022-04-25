@@ -30,12 +30,12 @@ export class AbstractService<T extends AbstractModel> {
     return this.http.get<T>(this.baseUrl + '/' + this.entityName + '/' + id, options);
   }
 
-  createResource(model: any): Observable<T>  {
-    return this.http.post<T>(`${this.baseUrl}/${this.entityName}`, model, this.httpOptions);
+  createResource(model: T): Observable<T>  {
+    return this.http.post<T>(`${this.baseUrl}/${this.entityName}`, model.toJson(), this.httpOptions);
   }
 
-  updateResource(model: any): Observable<T>  {
-    return this.http.patch<T>(`${this.baseUrl}/${this.entityName}/${model.id}`, model, this.httpOptions);
+  updateResource(model: T): Observable<T>  {
+    return this.http.patch<T>(`${this.baseUrl}/${this.entityName}/${model.id}`, model.toJson(), this.httpOptions);
   }
 
   deleteResource(id: string): Observable<T> {

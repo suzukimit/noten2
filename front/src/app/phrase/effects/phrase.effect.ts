@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Action } from '@ngrx/store';
+import {Action, Store} from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
@@ -37,6 +37,7 @@ export class PhraseEffects {
     private phraseService: PhraseService,
     private router: Router,
     private toastService: ToastService,
+    private store: Store,
   ) {}
 
   /**
@@ -95,7 +96,7 @@ export class PhraseEffects {
     ofType<UpdatePhrase>(PhraseActionTypes.UpdatePhrase),
     concatMap(action =>
       this.phraseService
-        .updateResource({ ...action.payload.phrase })
+        .updateResource(action.payload.phrase)
         .pipe(
           map(data => new UpdatePhraseSuccess({ phrase: { id: data.id, changes: data } })),
           catchError(error => of(new UpdatePhraseFail({ error })))
@@ -139,6 +140,7 @@ export class PhraseEffects {
     ofType<UpdatePhraseSuccess>(PhraseActionTypes.UpdatePhraseSuccess),
     tap((res: UpdatePhraseSuccess) => {
       this.toastService.show('フレーズを更新しました', { classname: 'bg-success text-light', delay: 5000 });
+      this.store.dispatch(new LoadPhrase(+res.payload.phrase.id));
     }),
   );
 

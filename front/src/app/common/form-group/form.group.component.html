@@ -13,7 +13,12 @@
     *ngIf=isSelectType()
     class="form-control"
     [formControlName]="controlName ? controlName : name">
-    <option *ngFor="let option of options">{{option}}</option>
+    <ng-container *ngIf="optionValue; else elseBlock">
+      <option *ngFor="let option of options" [value]="option[optionValue]" [ngValue]="option[optionValue]">{{option[optionLabel]}}</option>
+    </ng-container>
+    <ng-template #elseBlock>
+      <option *ngFor="let option of options">{{option}}</option>
+    </ng-template>
   </select>
   <textarea
     *ngIf=isTextareaType()

@@ -62,7 +62,7 @@ export function phraseReducer(state = initialState, action: PhraseActionUnion): 
       return { ...state, loading: true };
     }
     case PhraseActionTypes.UpdatePhraseSuccess: {
-      return adapter.updateOne(action.payload.phrase, { ...state, loading: false });
+      return { ...state, loading: true };
     }
     case PhraseActionTypes.UpdatePhraseFail: {
       return { ...state, loading: false };

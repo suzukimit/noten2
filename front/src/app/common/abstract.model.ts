@@ -8,6 +8,10 @@ export class AbstractModel {
   createdAt: any;
   updatedAt: any;
   _links: Links;
+
+  toJson(): string {
+    return JSON.stringify(this);
+  }
 }
 
 export class Links {

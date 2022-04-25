@@ -89,7 +89,7 @@ export class NotebookEffects {
     ofType<UpdateNotebook>(NotebookActionTypes.UpdateNotebook),
     concatMap(action =>
       this.notebookService
-        .updateResource({ ...action.payload.notebook })
+        .updateResource(action.payload.notebook)
         .pipe(
           map(data => new UpdateNotebookSuccess({ notebook: { id: data.id, changes: data } })),
           catchError(error => of(new UpdateNotebookFail({ error })))

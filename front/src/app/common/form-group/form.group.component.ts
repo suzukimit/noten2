@@ -15,6 +15,8 @@ export class FormGroupComponent implements OnInit {
   @Input() controlName: string = '';
   @Input() placeHolder: string = '';
   @Input() options: string[] = [];
+  @Input() optionValue: string = '';
+  @Input() optionLabel: string = '';
   @Input() rows: number = 0;
 
   ngOnInit(): void {

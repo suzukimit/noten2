@@ -30,7 +30,7 @@
           <form-group name="abc" type="textarea" [rows]=10 [form]=phraseForm></form-group>
         </div>
         <div class="notebook" *ngIf="notebooks$ | async">
-          <form-group name="notebook" type="select" [options]="notebookNames()" [form]=phraseForm></form-group>
+          <form-group name="notebook" type="select" [options]="notebooks" optionValue="id" optionLabel="name" [form]=phraseForm></form-group>
         </div>
 
         <div class="save">
