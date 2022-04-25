@@ -22,6 +22,9 @@ cd api
 ./gradlew bootRun
 ```
 
+* 8080ポートを使用
+* JDKは11以上
+
 ### Frontend
 
 ```
