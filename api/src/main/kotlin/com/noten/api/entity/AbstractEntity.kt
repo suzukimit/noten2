@@ -4,7 +4,9 @@ import com.noten.api.config.LoginUserResolver
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
+import org.aspectj.lang.reflect.MethodSignature
 import org.hibernate.Session
+import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.NoRepositoryBean
 import org.springframework.security.core.context.SecurityContextHolder
@@ -66,8 +68,11 @@ class UserFilterAdvisor {
     lateinit var em: EntityManager
 
     @Around("target(com.noten.api.entity.AbstractRepository)")
-    fun enableOwnerFilter(joinPoint: ProceedingJoinPoint): Any {
-
+    fun enableOwnerFilter(joinPoint: ProceedingJoinPoint): Any? {
+        val disable = ((joinPoint as MethodInvocationProceedingJoinPoint).signature as MethodSignature).method.isAnnotationPresent(DisableOwnerFilter::class.java)
+        if (disable) {
+            return joinPoint.proceed()
+        }
         val session = em.unwrap(Session::class.java)
         val user = RequestContextHolder.getRequestAttributes()?.getAttribute(LoginUserResolver.ATTRIBUTE_KEY, RequestAttributes.SCOPE_REQUEST) as? User
         return try {
@@ -82,6 +87,10 @@ class UserFilterAdvisor {
         }
     }
 }
+
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class DisableOwnerFilter
 
 @NoRepositoryBean
 interface AbstractRepository<T>: JpaRepository<T, Long>

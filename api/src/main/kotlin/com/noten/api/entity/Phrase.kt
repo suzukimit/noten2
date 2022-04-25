@@ -51,6 +51,10 @@ class Phrase: AbstractEntity() {
 interface PhraseRepository : AbstractRepository<Phrase> {
     //TODO ただの部分一致検索なのでパフォーマンス的に厳しいかも
     fun findByTitleContaining(title: String): List<Phrase>
+
+    @DisableOwnerFilter
+    //TODO なぜかNUllPointerになってしまうので暫定でフィルターを無視
+    override fun deleteById(id: Long)
 }
 
 @Component
