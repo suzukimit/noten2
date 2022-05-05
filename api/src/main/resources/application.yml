@@ -20,6 +20,11 @@ spring:
   resources.add-mappings: false
   output.ansi.enabled: always
 
+noten:
+  security:
+    secret: noten
+    expiration-time-msec: 7200000
+
 logging.level:
   org.hibernate.SQL: DEBUG
   org.hibernate.type.descriptor.sql.BasicBinder: TRACE

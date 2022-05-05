@@ -1,9 +1,7 @@
 package com.noten.api.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.noten.api.config.SecurityConstants.EXPIRATION_TIME
 import com.noten.api.config.SecurityConstants.HEADER_STRING
-import com.noten.api.config.SecurityConstants.SECRET
 import com.noten.api.config.SecurityConstants.TOKEN_PREFIX
 import com.noten.api.entity.UserRepository
 import io.jsonwebtoken.Jwts
@@ -61,8 +59,8 @@ import javax.servlet.http.HttpServletResponse
 @Configuration
 open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
-    @Autowired
-    lateinit var userDetailsService: LoginUserDetailsService
+    @Autowired lateinit var userDetailsService: LoginUserDetailsService
+    @Autowired lateinit var notenProperties: NotenProperties
 
     override fun configure(http: HttpSecurity?) {
         http?.let {
@@ -72,8 +70,8 @@ open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
                     .anyRequest()
                         .authenticated()
                     .and()
-                .addFilter(JWTAuthenticationFilter(authenticationManager()))
-                .addFilter(JWTAuthorizationFilter(authenticationManager()))
+                .addFilter(JWTAuthenticationFilter(authenticationManager(), notenProperties))
+                .addFilter(JWTAuthorizationFilter(authenticationManager(), notenProperties))
                 .sessionManagement().
                     sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
@@ -170,14 +168,11 @@ open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 }
 
 object SecurityConstants {
-    val SECRET = "noten"
-    //val EXPIRATION_TIME: Long = 28800000 // 8hours
-    val EXPIRATION_TIME: Long = 1800000 // 30 minutes
     val TOKEN_PREFIX = "Bearer "
     val HEADER_STRING = "Authorization"
 }
 
-class JWTAuthenticationFilter(val am: AuthenticationManager): UsernamePasswordAuthenticationFilter() {
+class JWTAuthenticationFilter(val am: AuthenticationManager, val notenProperties: NotenProperties): UsernamePasswordAuthenticationFilter() {
 
     companion object {
         val logger = LoggerFactory.getLogger(JWTAuthenticationFilter::class.java)
@@ -200,15 +195,15 @@ class JWTAuthenticationFilter(val am: AuthenticationManager): UsernamePasswordAu
     override fun successfulAuthentication(req: HttpServletRequest?, res: HttpServletResponse?, chain: FilterChain?, auth: Authentication?) {
         val token = Jwts.builder()
                 .setSubject((auth!!.principal as org.springframework.security.core.userdetails.User).username)
-                .setExpiration(Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SECRET.toByteArray())
+                .setExpiration(Date(System.currentTimeMillis() + notenProperties.security.expirationTimeMsec))
+                .signWith(SignatureAlgorithm.HS512, notenProperties.security.secret.toByteArray())
                 .compact()
         res!!.addHeader(HEADER_STRING, TOKEN_PREFIX + token)
         //super.successfulAuthentication(req, res, chain, auth)
     }
 }
 
-class JWTAuthorizationFilter(am: AuthenticationManager?) : BasicAuthenticationFilter(am) {
+class JWTAuthorizationFilter(am: AuthenticationManager?, val notenProperties: NotenProperties) : BasicAuthenticationFilter(am) {
 
     override fun doFilterInternal(req: HttpServletRequest, res: HttpServletResponse, chain: FilterChain) {
         //TODO permitAllでもfilterは常に通る。Authorizationヘッダーが不適切な場合に例外が出るのを避けるため、直書きで回避。
@@ -225,7 +220,7 @@ class JWTAuthorizationFilter(am: AuthenticationManager?) : BasicAuthenticationFi
 
     private fun getAuthentication(token: String): UsernamePasswordAuthenticationToken? {
         val user = Jwts.parser()
-                .setSigningKey(SECRET.toByteArray())
+                .setSigningKey(notenProperties.security.secret.toByteArray())
                 .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                 .body
                 .subject
