@@ -35,7 +35,7 @@
   <div ngbDropdown class="d-inline-block account">
     <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Account</button>
     <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu-right">
-      <button class="dropdown-item"><fa-icon [icon]=faSettings></fa-icon><span class="ml-2">Settings</span></button>
+      <a class="dropdown-item" routerLink="/settings"><fa-icon [icon]=faSettings></fa-icon><span class="ml-2">Settings</span></a>
       <button class="dropdown-item" (click)="logout()"><fa-icon [icon]=faLogout></fa-icon><span class="ml-2">Log out</span></button>
     </div>
   </div>

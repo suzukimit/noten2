@@ -1,0 +1,9 @@
+<div class="container mt-4">
+  <a routerLink="/home" class="d-flex justify-content-end">ホームに戻る</a>
+  <ul ngbNav [activeId]="route.fragment | async" class="nav-tabs">
+    <li [ngbNavItem]="link.fragment" *ngFor="let link of links">
+      <a ngbNavLink [routerLink]=link.url>{{ link.title }}</a>
+    </li>
+  </ul>
+  <router-outlet></router-outlet>
+</div>
