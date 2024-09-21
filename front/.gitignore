@@ -5,6 +5,7 @@
 /integration/bazel/bazel-*
 *.log
 node_modules
+.node-version
 
 ### IntelliJ IDEA ###
 *.iws
