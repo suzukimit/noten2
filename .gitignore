@@ -10,3 +10,6 @@ build
 *.ipr
 .idea
 idea_root
+
+### Local Dev ###
+docker/mysql_db

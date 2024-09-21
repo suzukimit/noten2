@@ -5,15 +5,23 @@
 * Frontend: Angular
 * Backend: Spring Boot
 * Security: JWT (Spring Security)
-* RDBMS: MySQL8.0
+* RDBMS: MySQL9.0
 
 ## Setup
 
 ### DB
 
-* MySQL8.0
-* 接続情報は `application.yml` を参考に
-* DDLはRest APIサーバーの起動時に実行 (flyway)
+```
+cd docker
+docker-compose up -d
+```
+
+初期起動時にパーミッションの問題でmysqlサーバーの起動に失敗する場合は以下のコマンドを実行。
+
+```
+sudo chmod -R 777 ./mysql_db
+sudo chown -R 999:999 ./mysql_db
+```
 
 ### Backend
 

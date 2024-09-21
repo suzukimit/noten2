@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:9.0
+    container_name: noten_mysql
+    environment:
+      MYSQL_DATABASE: noten
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - ./mysql_db:/var/lib/mysql
+      - ./mysql_conf:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
+    networks:
+      - noten_network
+
+networks:
+  noten_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+
