@@ -101,7 +101,7 @@ export class PhraseComponent extends AbstractComponent {
       reference: phrase.reference,
       key: phrase.key,
       abc: phrase.abc,
-      notebook: phrase.notebook.id,
+      notebook: phrase.notebook?.id,
     });
   }
 
