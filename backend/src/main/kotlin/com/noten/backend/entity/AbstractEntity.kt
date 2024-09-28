@@ -1,16 +1,13 @@
 package com.noten.backend.entity
 
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MappedSuperclass
+import com.noten.backend.config.LoginUserResolver
+import jakarta.persistence.*
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.reflect.MethodSignature
 import org.hibernate.Session
 import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint
-import org.springframework.data.annotation.Id
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.NoRepositoryBean
 import org.springframework.stereotype.Component
@@ -20,7 +17,6 @@ import org.springframework.web.context.request.RequestContextHolder
 import java.io.Serializable
 import java.time.Clock
 import java.time.LocalDateTime
-import javax.persistence.*
 
 @MappedSuperclass
 abstract class AbstractEntity : Serializable {
@@ -43,14 +39,14 @@ abstract class AbstractEntity : Serializable {
             createdAt = this
             updatedAt = this
         }
-        // (
-        //     RequestContextHolder.getRequestAttributes()?.getAttribute(
-        //         LoginUserResolver.ATTRIBUTE_KEY,
-        //         RequestAttributes.SCOPE_REQUEST,
-        //     ) as? User
-        // )?.let {
-        //     user = it
-        // }
+        (
+            RequestContextHolder.getRequestAttributes()?.getAttribute(
+                LoginUserResolver.ATTRIBUTE_KEY,
+                RequestAttributes.SCOPE_REQUEST,
+            ) as? User
+        )?.let {
+            user = it
+        }
     }
 
     @PreUpdate

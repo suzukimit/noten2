@@ -7,3 +7,30 @@ spring:
     url: jdbc:mysql://localhost:3306/noten
     username: username
     password: password
+  jpa:
+    hibernate:
+      # DDL??????????DB?drop?create????create-only???
+      ddl-auto: none
+      show-sql: true
+    properties.hibernate:
+      show_sql: false
+      format_sql: true
+      use_sql_comments: true
+      dialect: org.hibernate.dialect.MySQLDialect
+  mvc.throw-exception-if-no-handler-found: true
+  output.ansi.enabled: always
+  web:
+    resources:
+      add-mappings: false
+
+noten:
+  security:
+    secret: noten
+    expiration-time-msec: 7200000
+
+logging.level:
+  org.hibernate.SQL: DEBUG
+  org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  org.springframework.orm.jpa.JpaTransactionManager: DEBUG
+  org.springframework.transaction: DEBUG
+  org.hibernate.transaction: DEBUG

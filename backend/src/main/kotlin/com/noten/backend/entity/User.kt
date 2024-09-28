@@ -1,27 +1,30 @@
 package com.noten.backend.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
+import jakarta.persistence.*
+import jakarta.validation.constraints.NotEmpty
 import org.hibernate.annotations.Filter
 import org.hibernate.annotations.FilterDef
 import org.hibernate.annotations.ParamDef
+import org.springframework.data.annotation.Id
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler
 import org.springframework.data.rest.core.annotation.RepositoryRestResource
 import org.springframework.stereotype.Component
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
 import org.springframework.web.bind.annotation.CrossOrigin
-import javax.validation.constraints.NotEmpty
+import kotlin.jvm.Transient
 
 @Component
 @Entity
 @Table(uniqueConstraints = [(UniqueConstraint(columnNames = ["email"]))])
 @Filter(name = UserFilterAdvisor.FILTER_NAME, condition = "user_id = :userId")
-@FilterDef(name = UserFilterAdvisor.FILTER_NAME, parameters = [ParamDef(name = UserFilterAdvisor.PARAMETER, type = "long")])
+@FilterDef(name = UserFilterAdvisor.FILTER_NAME, parameters = [ParamDef(name = UserFilterAdvisor.PARAMETER, type = Long::class)])
 class User : AbstractEntity() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    override var id: Long = 0
+
     @Column
     var name: String = ""
 
