@@ -10,6 +10,16 @@ export class Phrase extends AbstractModel {
   abc = '';
   notebook: Notebook = null;
 
+  static createDefault() {
+    const phrase = new Phrase();
+    phrase.title = 'new';
+    phrase.meter = meters[0];
+    phrase.length = lengths[0];
+    phrase.key = keys[0];
+    phrase.abc = 'cdefgab';
+    return phrase;
+  }
+
   toString(): string {
     return `
 X: 1
@@ -32,16 +42,6 @@ ${this.abc}
       abc: this.abc,
       notebook: this.notebook ? this.notebook._links.self.href : null,
     }
-  }
-
-  static createDefault() {
-    const phrase = new Phrase();
-    phrase.title = 'new';
-    phrase.meter = meters[0];
-    phrase.length = lengths[0];
-    phrase.key = keys[0];
-    phrase.abc = 'cdefgab';
-    return phrase;
   }
 }
 
