@@ -212,7 +212,7 @@ class JwtServiceImpl : JwtService {
             .claims(extraClaims)
             .subject(userDetails.username)
             .issuedAt(Date(System.currentTimeMillis()))
-            .expiration(Date(System.currentTimeMillis() + 1000 * 60 * 24))
+            .expiration(Date(System.currentTimeMillis() + notenProperties.security.expirationTimeMsec))
             .signWith(signingKey, Jwts.SIG.HS256)
             .compact()
 
