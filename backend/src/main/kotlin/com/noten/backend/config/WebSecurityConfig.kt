@@ -1,6 +1,5 @@
 package com.noten.backend.config
 
-import com.noten.backend.entity.User
 import com.noten.backend.entity.UserRepository
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
@@ -10,18 +9,18 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.security.SecurityProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
@@ -32,30 +31,28 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache
-import org.springframework.security.web.savedrequest.RequestCache
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
-import org.springframework.util.StringUtils
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.web.filter.OncePerRequestFilter
-import java.util.*
+import java.util.Date
 import javax.crypto.SecretKey
+import kotlin.collections.HashMap
 
 /**
  * via: https://qiita.com/rubytomato@github/items/6c6318c948398fa62275
  */
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
-@Order(SecurityProperties.BASIC_AUTH_ORDER)
+@EnableMethodSecurity
 @Configuration
-open class WebSecurityConfig {
+class WebSecurityConfig {
+    @Autowired lateinit var userService: LoginUserDetailsService
+
     @Autowired lateinit var jwtAuthenticationFilter: JwtAuthenticationFilter
 
     @Bean
@@ -79,16 +76,6 @@ open class WebSecurityConfig {
             // rollが存在しないサービスなので、今回は気にしない。
         }
 
-        http.formLogin { form ->
-            form
-                .loginProcessingUrl("/login")
-                .permitAll()
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .successHandler(CustomAuthenticationSuccessHandler())
-                .failureHandler(SimpleUrlAuthenticationFailureHandler())
-        }
-
         http.logout { logout ->
             logout.logoutSuccessHandler(HttpStatusReturningLogoutSuccessHandler())
         }
@@ -100,11 +87,28 @@ open class WebSecurityConfig {
         http.csrf { csrf -> csrf.disable() }
         http.cors { cors -> cors.configurationSource(corsConfigurationSource()) }
 
+        http.authenticationProvider(authenticationProvider())
+
+        http.addFilterBefore(
+            jwtAuthenticationFilter,
+            UsernamePasswordAuthenticationFilter::class.java,
+        )
+
         return http.build()
     }
 
     @Bean
-    open fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+
+    @Bean
+    fun authenticationProvider(): AuthenticationProvider =
+        DaoAuthenticationProvider().apply {
+            setUserDetailsService(userService)
+            setPasswordEncoder(passwordEncoder())
+        }
+
+    @Bean
+    fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager = config.authenticationManager
 
     /**
      * CORSの設定
@@ -139,29 +143,6 @@ open class WebSecurityConfig {
                 return
             }
             response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.reasonPhrase)
-        }
-    }
-
-    /**
-     * 認証が成功した場合（200）
-     * TODO requestCache とかって何だっけ？
-     */
-    class CustomAuthenticationSuccessHandler : SimpleUrlAuthenticationSuccessHandler() {
-        private var requestCache: RequestCache = HttpSessionRequestCache()
-
-        override fun onAuthenticationSuccess(
-            request: HttpServletRequest,
-            response: HttpServletResponse,
-            authentication: Authentication,
-        ) {
-            requestCache.getRequest(request, response)?.let {
-                if (isAlwaysUseDefaultTargetUrl ||
-                    (targetUrlParameter != null && StringUtils.hasText(request.getParameter(targetUrlParameter)))
-                ) {
-                    requestCache.removeRequest(request, response)
-                }
-            }
-            clearAuthenticationAttributes(request)
         }
     }
 }
@@ -200,7 +181,7 @@ interface JwtService {
 
 @Service
 class JwtServiceImpl : JwtService {
-    lateinit var notenProperties: NotenProperties
+    @Autowired lateinit var notenProperties: NotenProperties
 
     override fun extractUserName(token: String): String = extractClaim(token) { obj: Claims -> obj.subject }
 
@@ -265,6 +246,13 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
+        // TODO SecurityFilterChain で permitAll しているが、なぜか効いてないので再度チェックしている。。
+        val requestPath = request.requestURI
+        if (requestPath == "/login" || requestPath == "/signup") {
+            filterChain.doFilter(request, response)
+            return
+        }
+
         val authHeader = request.getHeader(SecurityConstants.HEADER_STRING)
         val userEmail: String
         if (authHeader.isEmpty() || !authHeader.startsWith(SecurityConstants.TOKEN_PREFIX)) {
@@ -304,7 +292,7 @@ data class SignupRequest(
 )
 
 data class SigninRequest(
-    val email: String,
+    val username: String,
     val password: String,
 )
 
@@ -328,16 +316,16 @@ class AuthenticationServiceImpl : AuthenticationService {
 
     override fun signin(request: SigninRequest): JwtAuthenticationToken {
         authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(request.email, request.password),
+            UsernamePasswordAuthenticationToken(request.username, request.password),
         )
         val user =
-            userRepository.findByEmail(request.email)?.let {
+            userRepository.findByEmail(request.username)?.let {
                 org.springframework.security.core.userdetails.User(
                     it.email,
                     it.password,
                     AuthorityUtils.createAuthorityList("ROLE_USER"),
                 )
-            } ?: throw UsernameNotFoundException("username: ${request.email} not found")
+            } ?: throw UsernameNotFoundException("username: ${request.username} not found")
 
         val jwt = jwtService.generateToken(user)
         return JwtAuthenticationToken(jwt)

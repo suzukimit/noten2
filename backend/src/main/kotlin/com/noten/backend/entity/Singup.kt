@@ -26,6 +26,7 @@ class Signup : AbstractEntity() {
     @NotEmpty
     var email: String = ""
 
+    // TODO writeonlyにしないと
     @Column(nullable = false)
     var password: String = ""
 }

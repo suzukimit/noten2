@@ -9,7 +9,7 @@ class NotenProperties {
     var security = SecurityProperties()
 
     class SecurityProperties {
-        var secret = "noten"
+        var secret = "TRZOSpdj36qfC9qmb705kgDtGJHe7jLsC9xw2eLMpvI=" // don't use this in production
         var expirationTimeMsec = 7200000L
     }
 }

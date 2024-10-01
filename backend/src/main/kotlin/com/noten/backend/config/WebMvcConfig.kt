@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestAttributes
 import org.springframework.web.context.request.RequestContextHolder
@@ -44,7 +45,8 @@ class LoginUserResolver(
     ): Boolean {
         val authentication = SecurityContextHolder.getContext().authentication
         if (!AuthenticationTrustResolverImpl().isAnonymous(authentication)) {
-            userRepository.findByEmail(authentication.principal as String)?.let {
+            val email = (authentication.principal as? UserDetails)?.username ?: return true
+            userRepository.findByEmail(email)?.let {
                 RequestContextHolder.currentRequestAttributes().setAttribute(ATTRIBUTE_KEY, it, RequestAttributes.SCOPE_REQUEST)
             }
         }

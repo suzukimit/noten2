@@ -9,7 +9,6 @@ spring:
     password: password
   jpa:
     hibernate:
-      # DDL??????????DB?drop?create????create-only???
       ddl-auto: none
       show-sql: true
     properties.hibernate:
@@ -22,11 +21,6 @@ spring:
   web:
     resources:
       add-mappings: false
-
-noten:
-  security:
-    secret: noten
-    expiration-time-msec: 7200000
 
 logging.level:
   org.hibernate.SQL: DEBUG

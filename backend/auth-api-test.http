@@ -1,0 +1,154 @@
+### login
+POST http://localhost:8080/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "test@noten.com",
+  "password": "test"
+}
+
+> {%
+    client.test("should be 200", function() {
+        client.assert(response.status === 200);
+    });
+%}
+
+### login (invalid username)
+POST http://localhost:8080/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "invalid",
+  "password": "test"
+}
+
+> {%
+    client.test("should be 401", function() {
+        client.assert(response.status === 401);
+    });
+%}
+
+### login (invalid password)
+POST http://localhost:8080/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "test@noten.com",
+  "password": "invalid"
+}
+
+> {%
+    client.test("should be 401", function() {
+        client.assert(response.status === 401);
+    });
+%}
+
+
+### signup (OPTIONS)
+OPTIONS http://localhost:8080/signup
+
+> {%
+    client.test("should be 200", function() {
+        client.assert(response.status === 200);
+    });
+%}
+
+### signup (OPTIONS with allowed ORIGIN)
+OPTIONS http://localhost:8080/signup
+Origin: http://localhost:4200
+
+> {%
+    client.test("should be 200", function() {
+        client.assert(response.status === 200);
+    });
+%}
+
+### signup (OPTIONS with invalid ORIGIN)
+OPTIONS http://localhost:8080/signup
+Origin: http://localhost:9999
+
+> {%
+    client.test("should be 403", function() {
+        client.assert(response.status === 403);
+    });
+%}
+
+### signup (POST)
+POST http://localhost:8080/signup
+
+{
+  "email": "{{$random.email}}",
+  "password": "test"
+}
+
+> {%
+    client.test("should be 201", function() {
+        client.assert(response.status === 201);
+    });
+%}
+
+### signup (POST with invalid email)
+POST http://localhost:8080/signup
+
+{
+  "email": "invalid",
+  "password": "test"
+}
+
+> {%
+    client.test("should be 400", function() {
+        client.assert(response.status === 400);
+    });
+%}
+
+### signup (POST with duplicated email)
+POST http://localhost:8080/signup
+
+{
+  "email": "test@noten.com",
+  "password": "test"
+}
+
+> {%
+    client.test("should be 409", function() {
+        client.assert(response.status === 409);
+    });
+%}
+
+### signup (POST with empty email)
+POST http://localhost:8080/signup
+
+{
+  "password": "test"
+}
+
+> {%
+    client.test("should be 400", function() {
+        client.assert(response.status === 400);
+    });
+%}
+
+### signup (POST with empty password)
+POST http://localhost:8080/signup
+
+{
+  "password": "test"
+}
+
+> {%
+    client.test("should be 400", function() {
+        client.assert(response.status === 400);
+    });
+%}
+
+### signup (POST with empty body)
+POST http://localhost:8080/signup
+
+> {%
+    client.test("should be 400", function() {
+        client.assert(response.status === 400);
+    });
+%}

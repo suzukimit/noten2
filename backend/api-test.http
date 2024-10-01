@@ -1,0 +1,31 @@
+### login (set global token)
+POST http://localhost:8080/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "test@noten.com",
+  "password": "test"
+}
+
+> {%
+    client.test("should be 200", function() {
+        client.assert(response.status === 200);
+    });
+    client.global.set("token", response.body.value);
+%}
+
+### phrases (GET)
+< {%
+    console.log(client)
+%}
+
+GET http://localhost:8080/phrases
+Accept: application/json
+Authorization: Bearer {{token}}
+
+> {%
+    client.test("should be 200", function() {
+        client.assert(response.status === 200);
+    });
+%}
