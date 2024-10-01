@@ -88,6 +88,48 @@ POST http://localhost:8080/signup
     client.test("should be 201", function() {
         client.assert(response.status === 201);
     });
+    // 後続のテストで使うために、登録したユーザーのemailを保存
+    client.global.set("createdUserEmail", response.body.email);
+%}
+
+### login (POST with created user)
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "{{createdUserEmail}}",
+  "password": "test"
+}
+
+> {%
+    client.test("should be 200", function() {
+        client.assert(response.status === 200);
+    });
+    client.global.set("createdUserToken", response.body.value)
+%}
+
+### phrases (GET with created user)
+GET http://localhost:8080/phrases
+Accept: application/json
+Authorization: Bearer {{createdUserToken}}
+
+> {%
+    client.test("should be 200", function() {
+        client.assert(response.status === 200);
+        // OwnerFilterが効いているかを検証
+        client.assert(response.body.page.totalElements === 1);
+    });
+%}
+
+### phrases (GET with invalid token)
+GET http://localhost:8080/phrases
+Accept: application/json
+Authorization: Bearer invalid.invalid.invalid
+
+> {%
+    client.test("should be 401", function() {
+        client.assert(response.status === 401);
+    });
 %}
 
 ### signup (POST with invalid email)
@@ -156,8 +198,6 @@ POST http://localhost:8080/signup
 %}
 
 ### TODOs
-# 正しいtokenでリソースにアクセス -> 200
-# 正しいtokenでリソースにアクセスした際に、対象ユーザーのリソースのみ取得できること
 # 不正なtokenでリソースにアクセス -> 401
 # 不正なtoken（期限切れ）でリソースにアクセス -> 401
 # 不正なtoken（tokenとしては正しいがユーザーが存在しない場合） -> 401

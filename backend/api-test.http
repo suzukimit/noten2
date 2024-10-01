@@ -16,10 +16,6 @@ Content-Type: application/json
 %}
 
 ### phrases (GET)
-< {%
-    console.log(client)
-%}
-
 GET http://localhost:8080/phrases
 Accept: application/json
 Authorization: Bearer {{token}}
