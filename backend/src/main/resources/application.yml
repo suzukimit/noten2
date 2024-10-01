@@ -9,6 +9,7 @@ spring:
     password: password
   jpa:
     hibernate:
+      # DDLを作り直したい場合はDBをdrop・createしてからcreate-onlyを指定
       ddl-auto: none
       show-sql: true
     properties.hibernate:
