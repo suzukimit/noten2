@@ -71,7 +71,7 @@ class UserFilterAdvisor {
     @PersistenceContext
     lateinit var em: EntityManager
 
-    @Around("target(com.noten.api.entity.AbstractRepository)")
+    @Around("target(com.noten.backend.entity.AbstractRepository)")
     fun enableOwnerFilter(joinPoint: ProceedingJoinPoint): Any? {
         val disable =
             ((joinPoint as MethodInvocationProceedingJoinPoint).signature as MethodSignature).method.isAnnotationPresent(
