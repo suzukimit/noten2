@@ -1,6 +1,7 @@
 package com.noten.backend.entity
 
 import jakarta.persistence.*
+import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.rest.core.annotation.HandleAfterCreate
@@ -24,10 +25,12 @@ import org.springframework.web.bind.annotation.CrossOrigin
 class Signup : AbstractEntity() {
     @Column(nullable = false)
     @NotEmpty
+    @Email
     var email: String = ""
 
     // TODO writeonlyにしないと
     @Column(nullable = false)
+    @NotEmpty
     var password: String = ""
 }
 

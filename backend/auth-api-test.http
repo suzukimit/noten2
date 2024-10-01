@@ -99,8 +99,8 @@ POST http://localhost:8080/signup
 }
 
 > {%
-    client.test("should be 400", function() {
-        client.assert(response.status === 400);
+    client.test("should be 422", function() {
+        client.assert(response.status === 422);
     });
 %}
 
@@ -126,8 +126,8 @@ POST http://localhost:8080/signup
 }
 
 > {%
-    client.test("should be 400", function() {
-        client.assert(response.status === 400);
+    client.test("should be 422", function() {
+        client.assert(response.status === 422);
     });
 %}
 
@@ -135,20 +135,29 @@ POST http://localhost:8080/signup
 POST http://localhost:8080/signup
 
 {
-  "password": "test"
+  "email": "test@noten.com"
 }
 
 > {%
-    client.test("should be 400", function() {
-        client.assert(response.status === 400);
+    client.test("should be 422", function() {
+        client.assert(response.status === 422);
     });
 %}
 
 ### signup (POST with empty body)
 POST http://localhost:8080/signup
 
+{}
+
 > {%
-    client.test("should be 400", function() {
-        client.assert(response.status === 400);
+    client.test("should be 422", function() {
+        client.assert(response.status === 422);
     });
 %}
+
+### TODOs
+# 正しいtokenでリソースにアクセス -> 200
+# 正しいtokenでリソースにアクセスした際に、対象ユーザーのリソースのみ取得できること
+# 不正なtokenでリソースにアクセス -> 401
+# 不正なtoken（期限切れ）でリソースにアクセス -> 401
+# 不正なtoken（tokenとしては正しいがユーザーが存在しない場合） -> 401
