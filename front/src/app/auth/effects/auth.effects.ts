@@ -28,7 +28,7 @@ export class AuthEffects {
             return new LoginSuccess({
               user: {
                 name: '',
-                token: user.headers.get('authorization')
+                token: user.body.value
               }
             })
           }),
