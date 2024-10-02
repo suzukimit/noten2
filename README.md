@@ -5,11 +5,16 @@
 * Frontend: Angular
 * Backend: Spring Boot
 * Security: JWT (Spring Security)
-* RDBMS: MySQL9.0
+* RDBMS: MySQL9.0 or SQLite
 
 ## Setup
 
 ### DB
+
+DBはmysqlかsqliteを使用可能。
+（本番環境では安価なSQLiteを使用するが、mysqlへの移行も考慮して両方での動作を担保）
+
+#### mysql
 
 ```
 cd docker
@@ -22,6 +27,13 @@ docker-compose up -d
 sudo chmod -R 777 ./mysql_db
 sudo chown -R 999:999 ./mysql_db
 ```
+
+#### sqlite
+
+特に初期設定は不要だが、bootRunする際にprofileを指定する必要がある（デフォルトはmysql）。
+
+./gradlew bootRun --args='--spring.profiles.active=sqlite'
+
 
 ### Backend
 

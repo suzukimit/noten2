@@ -2,27 +2,14 @@ server.port: 8080
 
 spring:
   application.name: backend
-  datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/noten
-    username: username
-    password: password
-  jpa:
-    hibernate:
-      # DDLを作り直したい場合はDBをdrop・createしてからcreate-onlyを指定
-      ddl-auto: none
-      show-sql: true
-    properties.hibernate:
-      show_sql: false
-      format_sql: true
-      use_sql_comments: true
-      dialect: org.hibernate.dialect.MySQLDialect
-  mvc.throw-exception-if-no-handler-found: true
+  profiles:
+    active: mysql
   output.ansi.enabled: always
   web:
     resources:
       add-mappings: false
-
+  jpa:
+    open-in-view: false
 logging.level:
   org.hibernate.SQL: DEBUG
   org.hibernate.type.descriptor.sql.BasicBinder: TRACE

@@ -31,6 +31,8 @@ dependencies {
     implementation("org.flywaydb:flyway-core:10.18.2")
     implementation("org.flywaydb:flyway-mysql:10.18.2")
     runtimeOnly("com.mysql:mysql-connector-j")
+    implementation("org.xerial:sqlite-jdbc:3.46.1.3")
+    implementation("org.hibernate.orm:hibernate-community-dialects")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

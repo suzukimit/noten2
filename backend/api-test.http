@@ -25,3 +25,6 @@ Authorization: Bearer {{token}}
         client.assert(response.status === 200);
     });
 %}
+
+### TODOs
+# トランザクションのテスト（rollbackされるか）

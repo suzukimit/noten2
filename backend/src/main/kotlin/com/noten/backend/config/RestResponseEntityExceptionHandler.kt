@@ -5,6 +5,7 @@ import org.springframework.data.rest.core.RepositoryConstraintViolationException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.orm.jpa.JpaSystemException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
@@ -47,6 +48,10 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
                 org.hibernate.exception.ConstraintViolationException.ConstraintKind.OTHER ->
                     ResponseEntity(ErrorMessage(""), HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR)
             }
+        }
+
+        if (e is JpaSystemException && (e.message ?: "").contains("SQLITE_CONSTRAINT_UNIQUE")) {
+            return ResponseEntity(ErrorMessage("conflict occurred"), HttpHeaders(), HttpStatus.CONFLICT)
         }
 
         return super.handleException(e, request)
