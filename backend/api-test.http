@@ -1,3 +1,6 @@
+### root (GET)
+GET http://localhost:8080/
+
 ### login (set global token)
 POST http://localhost:8080/login
 Accept: application/json

@@ -253,14 +253,13 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
             return
         }
 
-        val authHeader = request.getHeader(SecurityConstants.HEADER_STRING)
-        val userEmail: String
-        if (authHeader.isEmpty() || !authHeader.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+        val authHeader: String? = request.getHeader(SecurityConstants.HEADER_STRING)
+        if (authHeader.isNullOrEmpty() || !authHeader.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response)
             return
         }
         val jwt = authHeader.substring(SecurityConstants.TOKEN_PREFIX.length)
-        userEmail = jwtService.extractUserName(jwt)
+        val userEmail = jwtService.extractUserName(jwt)
         if (userEmail.isNotEmpty() &&
             SecurityContextHolder.getContext().authentication == null
         ) {
