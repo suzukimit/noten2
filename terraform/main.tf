@@ -52,3 +52,10 @@ resource "google_compute_global_forwarding_rule" "https_forwarding_rule" {
   port_range = "443"
   load_balancing_scheme = "EXTERNAL"
 }
+
+resource "google_artifact_registry_repository" "docker_repository" {
+  repository_id = "noten"
+  format   = "DOCKER"
+  location = "asia-northeast2"
+  description = "Docker repository for storing images"
+}
