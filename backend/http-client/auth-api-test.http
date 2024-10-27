@@ -1,5 +1,5 @@
 ### login
-POST http://localhost:8080/login
+POST http://{{baseUrl}}/login
 Accept: application/json
 Content-Type: application/json
 
@@ -15,7 +15,7 @@ Content-Type: application/json
 %}
 
 ### login (invalid username)
-POST http://localhost:8080/login
+POST http://{{baseUrl}}/login
 Accept: application/json
 Content-Type: application/json
 
@@ -31,7 +31,7 @@ Content-Type: application/json
 %}
 
 ### login (invalid password)
-POST http://localhost:8080/login
+POST http://{{baseUrl}}/login
 Accept: application/json
 Content-Type: application/json
 
@@ -48,7 +48,7 @@ Content-Type: application/json
 
 
 ### signup (OPTIONS)
-OPTIONS http://localhost:8080/signup
+OPTIONS http://{{baseUrl}}/signup
 
 > {%
     client.test("should be 200", function() {
@@ -57,7 +57,7 @@ OPTIONS http://localhost:8080/signup
 %}
 
 ### signup (OPTIONS with allowed ORIGIN)
-OPTIONS http://localhost:8080/signup
+OPTIONS http://{{baseUrl}}/signup
 Origin: http://localhost:4200
 
 > {%
@@ -67,7 +67,7 @@ Origin: http://localhost:4200
 %}
 
 ### signup (OPTIONS with invalid ORIGIN)
-OPTIONS http://localhost:8080/signup
+OPTIONS http://{{baseUrl}}/signup
 Origin: http://localhost:9999
 
 > {%
@@ -77,7 +77,7 @@ Origin: http://localhost:9999
 %}
 
 ### signup (POST)
-POST http://localhost:8080/signup
+POST http://{{baseUrl}}/signup
 
 {
   "email": "{{$random.email}}",
@@ -93,7 +93,7 @@ POST http://localhost:8080/signup
 %}
 
 ### login (POST with created user)
-POST http://localhost:8080/login
+POST http://{{baseUrl}}/login
 Content-Type: application/json
 
 {
@@ -109,7 +109,7 @@ Content-Type: application/json
 %}
 
 ### phrases (GET with created user)
-GET http://localhost:8080/phrases
+GET http://{{baseUrl}}/phrases
 Accept: application/json
 Authorization: Bearer {{createdUserToken}}
 
@@ -122,7 +122,7 @@ Authorization: Bearer {{createdUserToken}}
 %}
 
 ### phrases (GET with invalid token)
-GET http://localhost:8080/phrases
+GET http://{{baseUrl}}/phrases
 Accept: application/json
 Authorization: Bearer invalid.invalid.invalid
 
@@ -133,7 +133,7 @@ Authorization: Bearer invalid.invalid.invalid
 %}
 
 ### signup (POST with invalid email)
-POST http://localhost:8080/signup
+POST http://{{baseUrl}}/signup
 
 {
   "email": "invalid",
@@ -147,7 +147,7 @@ POST http://localhost:8080/signup
 %}
 
 ### signup (POST with duplicated email)
-POST http://localhost:8080/signup
+POST http://{{baseUrl}}/signup
 
 {
   "email": "test@noten.com",
@@ -161,7 +161,7 @@ POST http://localhost:8080/signup
 %}
 
 ### signup (POST with empty email)
-POST http://localhost:8080/signup
+POST http://{{baseUrl}}/signup
 
 {
   "password": "test"
@@ -174,7 +174,7 @@ POST http://localhost:8080/signup
 %}
 
 ### signup (POST with empty password)
-POST http://localhost:8080/signup
+POST http://{{baseUrl}}/signup
 
 {
   "email": "test@noten.com"
@@ -187,7 +187,7 @@ POST http://localhost:8080/signup
 %}
 
 ### signup (POST with empty body)
-POST http://localhost:8080/signup
+POST http://{{baseUrl}}/signup
 
 {}
 

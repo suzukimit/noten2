@@ -1,8 +1,8 @@
 ### root (GET)
-GET http://localhost:8080/
+GET http://{{baseUrl}}/
 
 ### login (set global token)
-POST http://localhost:8080/login
+POST http://{{baseUrl}}/login
 Accept: application/json
 Content-Type: application/json
 
@@ -19,7 +19,7 @@ Content-Type: application/json
 %}
 
 ### phrases (GET)
-GET http://localhost:8080/phrases
+GET http://{{baseUrl}}/phrases
 Accept: application/json
 Authorization: Bearer {{token}}
 
