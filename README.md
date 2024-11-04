@@ -28,12 +28,23 @@ sudo chmod -R 777 ./mysql_db
 sudo chown -R 999:999 ./mysql_db
 ```
 
-#### sqlite
+#### SQLite
 
 特に初期設定は不要だが、bootRunする際にprofileを指定する必要がある（デフォルトはmysql）。
 
+```
 ./gradlew bootRun --args='--spring.profiles.active=sqlite'
+```
 
+litestreamを使うとCloud Storageバケットにレプリケーションが可能。bootRunする前に以下のコマンドでリストアし、レプリケーションが自動で行われるようにする。
+
+```
+# restore from cloud storage
+litestream restore -if-replica-exists -config litestream.yml noten.db
+
+# start replication
+litestream replicate -config litestream.yml
+```
 
 ### Backend
 

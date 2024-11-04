@@ -38,3 +38,7 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### SQLite DB ###
+noten.db*
+.noten.db*

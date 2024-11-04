@@ -1,0 +1,6 @@
+dbs:
+  - path: ./noten.db
+    replicas:
+      - type:   gcs
+        bucket: noten-dev-20241005
+        path:   litestream
