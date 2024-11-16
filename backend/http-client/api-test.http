@@ -29,5 +29,21 @@ Authorization: Bearer {{token}}
     });
 %}
 
+### phrases (POST)
+POST http://{{baseUrl}}/phrases
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "new",
+  "meter": "1/2",
+  "length": "1/2",
+  "reference": "",
+  "key": "C",
+  "abc": "cdefgab",
+  "notebook": null
+}
+
 ### TODOs
 # トランザクションのテスト（rollbackされるか）
