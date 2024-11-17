@@ -65,3 +65,29 @@ ng serve
 
 * http://localhost:4200
 * 初期ユーザーでのログイン: `test@noten.com / test`
+
+
+## デプロイ手順
+
+以下はローカルで手動でデプロイする手順（通常はCloud Buildを使う）
+
+```
+gcloud auth login --update-adc
+
+# buildしてjarファイルを生成
+./gradlew build -x test
+
+# Dockerfileからイメージをビルド（Cloud Run実行環境とアーキテクチャが一致しないとエラーになるため、multi-platform build）
+docker buildx build --platform linux/amd64 -t noten/noten-backend .
+docker tag noten/noten-backend asia-northeast2-docker.pkg.dev/noten2-dev/noten/noten-backend:latest
+
+# Artifact Registryにpush
+docker push asia-northeast2-docker.pkg.dev/noten2-dev/noten/noten-backend
+
+# cloud runにデプロイ
+gcloud run deploy noten \
+  --image asia-northeast2-docker.pkg.dev/noten2-dev/noten/noten/noten-backend \
+  --platform managed \
+  --region asia-northeast2 \
+  --update-env-vars SPRING_PROFILES_ACTIVE=sqlite
+```
