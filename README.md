@@ -67,13 +67,15 @@ ng serve
 * 初期ユーザーでのログイン: `test@noten.com / test`
 
 
-## デプロイ手順
-
-以下はローカルで手動でデプロイする手順（通常はCloud Buildを使う）
+## デプロイ
 
 ```
-gcloud auth login --update-adc
+gcloud builds submit --config cloudbuild.yaml .
+```
 
+cloud buildを使わずにデプロイする場合は以下の手順を実行する。
+
+```
 # buildしてjarファイルを生成
 ./gradlew build -x test
 

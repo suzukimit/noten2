@@ -1,0 +1,29 @@
+steps:
+  # GradleでJARファイルをビルド
+  - name: 'gcr.io/cloud-builders/gradle'
+    dir: 'backend' # backendディレクトリで実行
+    args: [ 'build', '-x', 'test' ]
+
+  # Dockerイメージをビルド
+  - name: 'gcr.io/cloud-builders/docker'
+    dir: 'backend'
+    args: ['build', '-t', 'asia-northeast2-docker.pkg.dev/noten2-dev/noten/noten-backend:latest', '.']
+
+  # Artifact RegistryにDockerイメージをプッシュ
+  - name: 'gcr.io/cloud-builders/docker'
+    dir: 'backend'
+    args: ['push', 'asia-northeast2-docker.pkg.dev/noten2-dev/noten/noten-backend:latest']
+
+  # Cloud Runにデプロイ
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    dir: 'backend'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'noten'
+      - '--image=asia-northeast2-docker.pkg.dev/noten2-dev/noten/noten/noten-backend:latest'
+      - '--platform=managed'
+      - '--region=asia-northeast2'
+      - '--allow-unauthenticated'
+      - '--update-env-vars=SPRING_PROFILES_ACTIVE=sqlite'
