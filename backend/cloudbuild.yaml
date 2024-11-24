@@ -27,3 +27,6 @@ steps:
       - '--region=asia-northeast2'
       - '--allow-unauthenticated'
       - '--update-env-vars=SPRING_PROFILES_ACTIVE=sqlite'
+
+options:
+  logging: 'CLOUD_LOGGING_ONLY'
