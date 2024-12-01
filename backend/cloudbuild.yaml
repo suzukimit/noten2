@@ -1,11 +1,14 @@
 steps:
-  - name: 'gcr.io/cloud-builders/gradle'
-    args: [ '--version' ]
+  - name: 'gcr.io/cloud-builders/java'
+    dir: 'backend'
+    entrypoint: './gradlew'
+    args: ['--version']
 
-  # GradleでJARファイルをビルド
-  - name: 'gcr.io/cloud-builders/gradle'
-    dir: 'backend' # backendディレクトリで実行
-    args: [ 'build', '-x', 'test' ]
+  # Gradle Wrapperでビルド
+  - name: 'gcr.io/cloud-builders/java'
+    dir: 'backend'
+    entrypoint: './gradlew'
+    args: ['build' '-x', 'test']
 
   # Dockerイメージをビルド
   - name: 'gcr.io/cloud-builders/docker'
