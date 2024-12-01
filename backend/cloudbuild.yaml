@@ -1,11 +1,11 @@
 steps:
-  - name: 'gcr.io/cloud-builders/java'
+  - name: 'gcr.io/cloud-builders/gradle'
     dir: 'backend'
     entrypoint: './gradlew'
     args: ['--version']
 
   # Gradle Wrapperでビルド
-  - name: 'gcr.io/cloud-builders/java'
+  - name: 'gcr.io/cloud-builders/gradle'
     dir: 'backend'
     entrypoint: './gradlew'
     args: ['build', '-x', 'test']
