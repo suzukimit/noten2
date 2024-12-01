@@ -1,39 +1,22 @@
 steps:
-  # Gradle Wrapperでバージョン確認
-  - name: 'eclipse-temurin:17'
-    dir: 'backend'
-    entrypoint: './gradlew'
-    args: ['--version']
-
-  # Gradle Wrapperでビルド
-  - name: 'eclipse-temurin:17'
-    dir: 'backend'
-    entrypoint: './gradlew'
-    args: ['build', '-x', 'test']
-
-  # Dockerイメージをビルド
-  - name: 'gcr.io/cloud-builders/docker'
-    dir: 'backend'
-    args: ['build', '-t', 'asia-northeast2-docker.pkg.dev/noten2-dev/noten/noten-backend:latest', '.']
-
-  # Artifact RegistryにDockerイメージをプッシュ
-  - name: 'gcr.io/cloud-builders/docker'
-    dir: 'backend'
-    args: ['push', 'asia-northeast2-docker.pkg.dev/noten2-dev/noten/noten-backend:latest']
-
-  # Cloud Runにデプロイ
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    dir: 'backend'
-    entrypoint: gcloud
+  # Cloud SQL Proxy を起動
+  - name: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.13.0
+    entrypoint: /cloud-sql-proxy
     args:
-      - 'run'
-      - 'deploy'
-      - 'noten'
-      - '--image=asia-northeast2-docker.pkg.dev/noten2-dev/noten/noten/noten-backend:latest'
-      - '--platform=managed'
-      - '--region=asia-northeast2'
-      - '--allow-unauthenticated'
-      - '--update-env-vars=SPRING_PROFILES_ACTIVE=sqlite'
+      [
+        "--address=0.0.0.0",
+        "--port=5432",
+        "noten2-dev:asia-northeast2:test"
+      ]
 
-options:
-  logging: 'CLOUD_LOGGING_ONLY'
+  # Flyway マイグレーションを実行
+  - name: flyway/flyway:10
+    entrypoint: flyway
+    args:
+      [
+        "-url=jdbc:postgresql://127.0.0.1:5432/postgres",
+        "-user=postgres",
+        "-password=$_POSTGRES_PASSWORD",
+        "-locations=filesystem:/workspace/backend/src/main/resources/db/migration-test",
+        "migrate"
+      ]
