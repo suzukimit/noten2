@@ -1,11 +1,12 @@
 steps:
-  - name: 'gcr.io/cloud-builders/gradle'
+  # Gradle Wrapperでバージョン確認
+  - name: 'eclipse-temurin:17'
     dir: 'backend'
     entrypoint: './gradlew'
     args: ['--version']
 
   # Gradle Wrapperでビルド
-  - name: 'gcr.io/cloud-builders/gradle'
+  - name: 'eclipse-temurin:17'
     dir: 'backend'
     entrypoint: './gradlew'
     args: ['build', '-x', 'test']
