@@ -20,3 +20,6 @@ steps:
         "-locations=filesystem:/workspace/backend/src/main/resources/db/migration-test",
         "migrate"
       ]
+
+options:
+  logging: 'CLOUD_LOGGING_ONLY'
