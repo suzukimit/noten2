@@ -19,7 +19,7 @@ steps:
       - |
         echo "Checking if Cloud SQL Proxy is ready..."
         timeout=30
-        while ! nc -z 127.0.0.1 5432; do
+        while ! nc -z host.docker.internal 5432; do
           echo "Waiting for Cloud SQL Proxy..."
           sleep 2
           timeout=$((timeout - 2))
@@ -36,7 +36,7 @@ steps:
     entrypoint: flyway
     args:
       [
-        "-url=jdbc:postgresql://127.0.0.1:5432/postgres",
+        "-url=jdbc:postgresql://host.docker.internal:5432/postgres",  # ホストアドレスを指定
         "-user=postgres",
         "-password=$_POSTGRES_PASSWORD",
         "-locations=filesystem:/workspace/backend/src/main/resources/db/migration-test",
@@ -46,4 +46,3 @@ steps:
 
 options:
   logging: 'CLOUD_LOGGING_ONLY'
-  network: "custom-network"
