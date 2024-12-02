@@ -1,48 +1,51 @@
 steps:
-  # 1. Cloud SQL Proxy を起動
-  - name: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.13.0
-    entrypoint: /cloud-sql-proxy
-    args:
-      [
-        "--address=0.0.0.0",
-        "--port=5432",
-        "noten2-dev:asia-northeast2:test"
-      ]
-    id: "proxy"
-    waitFor: ['-']
-
-  # 2. ポートチェック（Cloud SQL Proxy の準備完了を確認）
+  # 0. ソケット用ディレクトリを作成
   - name: bash
     entrypoint: bash
     args:
       - -c
       - |
-        echo "Checking if Cloud SQL Proxy is ready..."
-        timeout=30
-        while ! nc -z host.docker.internal 5432; do
-          echo "Waiting for Cloud SQL Proxy..."
-          sleep 2
-          timeout=$((timeout - 2))
-          if [ $timeout -le 0 ]; then
-            echo "Timeout waiting for Cloud SQL Proxy"
-            exit 1
-          fi
-        done
-    waitFor: ['-']
-    id: "port-check"
+        mkdir -p /workspace/noten2-dev:asia-northeast2
+        chmod 777 /workspace/noten2-dev:asia-northeast2  # 必要な権限を付与
+    id: "create-socket-dir"
+    waitFor: ["-"]
 
-  # 3. Flyway マイグレーションを実行
+  # 1. Cloud SQL Proxy を起動
+  - name: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.13.0
+    entrypoint: /cloud-sql-proxy
+    args:
+      [
+        "--unix-socket=/workspace/noten2-dev:asia-northeast2/test",  # フルパスを指定
+        "noten2-dev:asia-northeast2:test"
+      ]
+    id: "proxy"
+    waitFor: ["create-socket-dir"]
+
+  # 2. Cloud SQL Proxy の起動待機
+  - name: flyway/flyway:10
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        while [ ! -e "/workspace/noten2-dev:asia-northeast2/test" ]; do
+          sleep 1
+        done
+    timeout: 60s
+    id: "proxy-wait"
+    waitFor: ["proxy"]
+
+  # 3. Flyway マイグレーション
   - name: flyway/flyway:10
     entrypoint: flyway
     args:
       [
-        "-url=jdbc:postgresql://host.docker.internal:5432/postgres",  # ホストアドレスを指定
+        "-url=jdbc:postgresql://127.0.0.1:5432/postgres",  # TCP接続の場合
         "-user=postgres",
         "-password=$_POSTGRES_PASSWORD",
         "-locations=filesystem:/workspace/backend/src/main/resources/db/migration-test",
         "migrate"
       ]
-    waitFor: ["port-check"]
+    waitFor: ["proxy-wait"]
 
 options:
   logging: 'CLOUD_LOGGING_ONLY'
