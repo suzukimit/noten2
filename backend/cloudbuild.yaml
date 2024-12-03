@@ -27,6 +27,7 @@ steps:
     args:
       - -c
       - |
+        ls /workspace/.cloudsql
         while [ ! -e "/workspace/.cloudsql/noten2-dev:asia-northeast2:test" ]; do
           ls /workspace/.cloudsql
           sleep 1
