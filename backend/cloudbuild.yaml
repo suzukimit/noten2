@@ -8,6 +8,9 @@ steps:
         mkdir -p /workspace/.cloudsql
         chmod 777 /workspace/.cloudsql
     id: "create-socket-dir"
+    volumes:
+      - name: cloudsql
+        path: /workspace/.cloudsql
     waitFor: ["-"]
 
   # 1. Cloud SQL Proxy を起動
@@ -19,6 +22,9 @@ steps:
         "noten2-dev:asia-northeast2:test"
       ]
     id: "proxy"
+    volumes:
+      - name: cloudsql
+        path: /workspace/.cloudsql
     waitFor: ["create-socket-dir"]
 
   # 2. Cloud SQL Proxy の起動待機
