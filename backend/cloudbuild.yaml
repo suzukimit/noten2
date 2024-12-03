@@ -1,52 +1,38 @@
 steps:
-  # 1. Cloud SQL Proxy を起動し、IP アドレスを保存
-  - name: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.13.0
-    entrypoint: /bin/bash
-    args:
-      - -c
-      - |
-        echo "Starting Cloud SQL Proxy..."
-        /cloud-sql-proxy --address=0.0.0.0 --port=5432 noten2-dev:asia-northeast2:test &
-        echo "Waiting for Cloud SQL Proxy..."
-        sleep 5
-        echo "Saving container IP address..."
-        ip addr show eth0 | grep 'inet ' | awk '{print $2}' | cut -d/ -f1 > /workspace/proxy-ip.txt
-    id: "proxy"
-
-  # 2. ポートチェック（Cloud SQL Proxy の準備完了を確認）
-  - name: curlimages/curl:latest
+  # 1. Docker ネットワーク情報を確認
+  - name: gcr.io/cloud-builders/docker
     entrypoint: /bin/sh
     args:
       - -c
       - |
-        echo "Checking Cloud SQL Proxy readiness..."
-        PROXY_IP=$(cat /workspace/proxy-ip.txt)
-        echo "Proxy IP: $$PROXY_IP"
-        timeout=30
-        while ! nc -z $$PROXY_IP 5432; do
-          echo "Waiting for Cloud SQL Proxy at $$PROXY_IP:5432..."
-          sleep 2
-          timeout=$((timeout - 2))
-          if [ $timeout -le 0 ]; then
-            echo "Timeout waiting for Cloud SQL Proxy"
-            exit 1
-          fi
-        done
-    id: "port-check"
-    waitFor: ["proxy"]
+        echo "Inspecting the cloudbuild network..."
+        docker network inspect cloudbuild > /workspace/network-inspect.json
+        echo "Network inspect information saved to /workspace/network-inspect.json"
+        cat /workspace/network-inspect.json
+
+  # 2. Cloud SQL Proxy を起動
+  - name: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.13.0
+    entrypoint: /cloud-sql-proxy
+    args:
+      [
+        "--address=0.0.0.0",
+        "--port=5432",
+        "noten2-dev:asia-northeast2:test"
+      ]
+    id: "proxy"
 
   # 3. Flyway マイグレーション
   - name: flyway/flyway:10
     entrypoint: flyway
     args:
       [
-        "-url=jdbc:postgresql://$(cat /workspace/proxy-ip.txt):5432/postgres",
+        "-url=jdbc:postgresql://proxy:5432/postgres",
         "-user=postgres",
         "-password=$_POSTGRES_PASSWORD",
         "-locations=filesystem:/workspace/backend/src/main/resources/db/migration-test",
         "migrate"
       ]
-    waitFor: ["port-check"]
+    waitFor: ["proxy"]
 
 options:
   logging: 'CLOUD_LOGGING_ONLY'
