@@ -27,9 +27,7 @@ steps:
     args:
       - -c
       - |
-        ls /workspace/.cloudsql
         while [ ! -e "/workspace/.cloudsql/noten2-dev:asia-northeast2:test" ]; do
-          ls /workspace/.cloudsql
           sleep 1
         done
     timeout: 60s
@@ -41,7 +39,7 @@ steps:
     entrypoint: flyway
     args:
       [
-        "-url=jdbc:postgresql://127.0.0.1:5432/postgres",  # TCP接続の場合
+        "-url=jdbc:postgresql://localhost/postgres?socketFactory=org.postgresql.core.SocketFactory&socketFactoryArg=/workspace/noten2-dev:asia-northeast2",
         "-user=postgres",
         "-password=$_POSTGRES_PASSWORD",
         "-locations=filesystem:/workspace/backend/src/main/resources/db/migration-test",
