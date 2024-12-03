@@ -27,7 +27,8 @@ steps:
     args:
       - -c
       - |
-        while [ ! -e "/workspace/.cloudsql" ]; do
+        while [ ! -e "/workspace/.cloudsql/noten2-dev:asia-northeast2:test" ]; do
+          ls /workspace/.cloudsql
           sleep 1
         done
     timeout: 60s
