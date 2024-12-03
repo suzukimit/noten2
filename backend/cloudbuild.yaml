@@ -5,8 +5,8 @@ steps:
     args:
       - -c
       - |
-        mkdir -p /workspace/noten2-dev:asia-northeast2
-        chmod 777 /workspace/noten2-dev:asia-northeast2  # 必要な権限を付与
+        mkdir -p /workspace/.cloudsql
+        chmod 777 /workspace/.cloudsql
     id: "create-socket-dir"
     waitFor: ["-"]
 
@@ -15,7 +15,7 @@ steps:
     entrypoint: /cloud-sql-proxy
     args:
       [
-        "--unix-socket=/workspace/noten2-dev:asia-northeast2/test",  # フルパスを指定
+        "--unix-socket=/workspace/.cluodsql",
         "noten2-dev:asia-northeast2:test"
       ]
     id: "proxy"
@@ -27,7 +27,7 @@ steps:
     args:
       - -c
       - |
-        while [ ! -e "/workspace/noten2-dev:asia-northeast2/test" ]; do
+        while [ ! -e "/workspace/.cloudsql" ]; do
           sleep 1
         done
     timeout: 60s
