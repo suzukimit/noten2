@@ -32,7 +32,7 @@ steps:
         done
     timeout: 60s
     id: "proxy-wait"
-    waitFor: ["proxy"]
+    waitFor: ["create-socket-dir"]
 
   # 3. Flyway マイグレーション
   - name: flyway/flyway:10
