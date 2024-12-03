@@ -6,33 +6,27 @@ steps:
       - -c
       - |
         echo "Inspecting the cloudbuild network..."
+        docker network inspect
         docker network inspect cloudbuild > /workspace/network-inspect.json
         echo "Network inspect information saved to /workspace/network-inspect.json"
         cat /workspace/network-inspect.json
+        sleep 30
+        echo "sleep end"
+    waitFor: ['-']
 
-  # 2. Cloud SQL Proxy を起動
-  - name: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.13.0
-    entrypoint: /cloud-sql-proxy
+  # 検証ステップ: `step_0` がホスト名として解決できるか確認
+  - name: curlimages/curl:latest
+    entrypoint: sh
     args:
-      [
-        "--address=0.0.0.0",
-        "--port=5432",
-        "noten2-dev:asia-northeast2:test"
-      ]
-    id: "proxy"
-
-  # 3. Flyway マイグレーション
-  - name: flyway/flyway:10
-    entrypoint: flyway
-    args:
-      [
-        "-url=jdbc:postgresql://proxy:5432/postgres",
-        "-user=postgres",
-        "-password=$_POSTGRES_PASSWORD",
-        "-locations=filesystem:/workspace/backend/src/main/resources/db/migration-test",
-        "migrate"
-      ]
-    waitFor: ["proxy"]
+      - -c
+      - |
+        echo "Testing hostname resolution..."
+        if ping -c 3 step_0; then
+          echo "step_0 hostname resolved successfully."
+        else
+          echo "step_0 hostname resolution failed."
+        fi
+    waitFor: ['-']
 
 options:
   logging: 'CLOUD_LOGGING_ONLY'
