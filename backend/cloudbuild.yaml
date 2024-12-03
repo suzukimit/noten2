@@ -1,51 +1,52 @@
 steps:
-  # 0. ソケット用ディレクトリを作成
-  - name: bash
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        mkdir -p /workspace/.cloudsql
-        chmod 777 /workspace/.cloudsql
-    id: "create-socket-dir"
-    waitFor: ["-"]
-
   # 1. Cloud SQL Proxy を起動
   - name: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.13.0
     entrypoint: /cloud-sql-proxy
     args:
       [
-        "--unix-socket=/workspace/.cloudsql",
+        "--address=0.0.0.0",
+        "--port=5432",
         "noten2-dev:asia-northeast2:test"
       ]
     id: "proxy"
-    waitFor: ["create-socket-dir"]
+    waitFor: ['-']
 
-  # 2. Cloud SQL Proxy の起動待機
-  - name: flyway/flyway:10
+  # 2. ポートチェック（Cloud SQL Proxy の準備完了を確認）
+  - name: bash
     entrypoint: bash
     args:
       - -c
       - |
-        while [ ! -e "/workspace/.cloudsql/noten2-dev:asia-northeast2:test" ]; do
-          sleep 1
-        done
-    timeout: 60s
-    id: "proxy-wait"
-    waitFor: ["create-socket-dir"]
+        echo "Testing network connectivity..."
+        echo "Attempting to ping 'proxy'..."
+        if ping -c 3 proxy; then
+          echo "Ping to 'proxy' successful!"
+        else
+          echo "Ping to 'proxy' failed."
+        fi
+        echo "Checking if port 5432 on 'proxy' is accessible..."
+        if nc -z proxy 5432; then
+          echo "Port 5432 on 'proxy' is accessible."
+        else
+          echo "Port 5432 on 'proxy' is not accessible."
+        fi
+        echo "Retrieving local IP address..."
+        ip addr show
+    waitFor: ['-']
+    id: "port-check"
 
-  # 3. Flyway マイグレーション
+  # 3. Flyway マイグレーションを実行
   - name: flyway/flyway:10
     entrypoint: flyway
     args:
       [
-        "-url=jdbc:postgresql://localhost/postgres?socketFactory=org.postgresql.core.SocketFactory&socketFactoryArg=/workspace/noten2-dev:asia-northeast2",
+        "-url=jdbc:postgresql://127.0.0.1:5432/postgres",
         "-user=postgres",
         "-password=$_POSTGRES_PASSWORD",
         "-locations=filesystem:/workspace/backend/src/main/resources/db/migration-test",
         "migrate"
       ]
-    waitFor: ["proxy-wait"]
+    waitFor: ["port-check"]
 
 options:
   logging: 'CLOUD_LOGGING_ONLY'
